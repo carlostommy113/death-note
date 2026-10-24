@@ -10,9 +10,11 @@ let activeEntryId = null;
 let soundEnabled = true;
 
 // --- Elementos DOM ---
-const pendantRig = document.getElementById('pendant-rig');
+const necklaceRig = document.getElementById('necklace-rig') || document.getElementById('pendant-rig');
+const necklaceCordWrap = document.getElementById('necklace-cord-wrap');
 const book3D = document.getElementById('book-3d');
 const closeBookBtn = document.getElementById('close-book-btn');
+const hintContainer = document.getElementById('hint-container');
 const rulesBtn = document.getElementById('rules-btn');
 const closeRulesBtn = document.getElementById('close-rules-btn');
 const closeRulesBtn2 = document.getElementById('close-rules-btn-2');
@@ -178,40 +180,52 @@ soundToggle.addEventListener('click', (e) => {
 // 2. ANIMACIÓN DE ENTRADA (CAÍDA DESDE ARRIBA)
 // ====================================================
 function triggerDropAnimation() {
-  pendantRig.classList.add('dropping');
+  necklaceRig.classList.add('dropping');
   
   // Al tocar el fondo, sonar campanita suave
   setTimeout(() => {
     playMagicalSound('drop');
-  }, 600);
+  }, 620);
 }
 
 // ====================================================
 // 3. APERTURA Y CIERRE DEL LIBRO 3D
 // ====================================================
 function openBook() {
-  if (pendantRig.classList.contains('opened')) return;
+  if (necklaceRig.classList.contains('opened')) return;
 
   initAudio();
   playMagicalSound('open');
-  pendantRig.classList.remove('dropping');
-  pendantRig.classList.add('opened');
+  necklaceRig.classList.remove('dropping');
+  necklaceRig.classList.add('opened');
   updateDateDisplay();
 }
 
 function closeBook() {
-  if (!pendantRig.classList.contains('opened')) return;
+  if (!necklaceRig.classList.contains('opened')) return;
 
   playMagicalSound('close');
-  pendantRig.classList.remove('opened');
+  necklaceRig.classList.remove('opened');
 }
 
-// Al hacer clic en la libreta cuando está cerrada -> se abre
+// Al hacer clic en la libreta, cordón o texto cuando está cerrado -> se abre
 book3D.addEventListener('click', (e) => {
-  if (!pendantRig.classList.contains('opened')) {
+  if (!necklaceRig.classList.contains('opened')) {
     openBook();
   }
 });
+
+if (necklaceCordWrap) {
+  necklaceCordWrap.addEventListener('click', () => {
+    if (!necklaceRig.classList.contains('opened')) openBook();
+  });
+}
+
+if (hintContainer) {
+  hintContainer.addEventListener('click', () => {
+    if (!necklaceRig.classList.contains('opened')) openBook();
+  });
+}
 
 closeBookBtn.addEventListener('click', (e) => {
   e.stopPropagation();

@@ -1,25 +1,22 @@
 /* ====================================================
    DEATH NOTE • DIARIO SECRETO
-   Diseño Estético, Animación de Caída y Apertura 3D
+   Collar Realista en "V" con Cordón Trenzado y Movimiento Físico
    ==================================================== */
 
 :root {
-  --bg-deep: #0b0b0e;
-  --bg-card: #15151b;
+  --bg-deep: #0a0a0d;
   --silver-bright: #f0f0f5;
   --silver-muted: #9c9ca8;
   --burgundy-glow: rgba(184, 41, 65, 0.35);
   --burgundy-accent: #b82941;
-  --gold-warm: #d4af37;
   --paper-cream: #faf7f0;
   --paper-line: #dfd8cb;
-  --paper-red-line: #e3a6ad;
   --ink-primary: #1e1d1c;
   --ink-secondary: #57524c;
   --leather-black: #121215;
   --font-title: 'Cinzel', serif;
   --font-serif: 'Marcellus', serif;
-  --font-script: 'Nanum Pen Script', 'Caveat', cursive;
+  --font-script: 'Nanum Pen Script', cursive;
   --font-body: 'Montserrat', sans-serif;
 }
 
@@ -40,14 +37,14 @@ body {
   perspective: 2500px;
 }
 
-/* Fondo de estrellas y niebla sutil */
+/* Fondo con estrellas y destellos */
 .stars-bg {
   position: fixed;
   inset: 0;
   background: 
-    radial-gradient(circle at 50% 30%, rgba(35, 25, 40, 0.6) 0%, transparent 70%),
-    radial-gradient(circle at 80% 80%, rgba(20, 20, 28, 0.8) 0%, transparent 60%),
-    #0b0b0e;
+    radial-gradient(circle at 50% 25%, rgba(40, 28, 48, 0.65) 0%, transparent 65%),
+    radial-gradient(circle at 80% 80%, rgba(20, 20, 30, 0.85) 0%, transparent 60%),
+    #0a0a0d;
   pointer-events: none;
   z-index: 1;
 }
@@ -61,14 +58,14 @@ body {
   z-index: 2;
 }
 
-/* Botón flotante de sonido */
+/* Botón de Sonido Flotante */
 .sound-pill-btn {
   position: fixed;
   top: 18px;
   right: 20px;
-  background: rgba(22, 22, 28, 0.85);
+  background: rgba(22, 22, 28, 0.88);
   backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.16);
   color: #f0f0f5;
   font-family: var(--font-body);
   font-size: 0.82rem;
@@ -85,13 +82,13 @@ body {
 }
 
 .sound-pill-btn:hover {
-  border-color: rgba(240, 240, 245, 0.4);
+  border-color: rgba(240, 240, 245, 0.45);
   transform: translateY(-2px);
   box-shadow: 0 6px 20px var(--burgundy-glow);
 }
 
 /* ====================================================
-   ESCENARIO PRINCIPAL Y SISTEMA DEL DIJE / LIBRETA
+   ESCENARIO Y SUSPENSIÓN DEL COLLAR
    ==================================================== */
 .scene-container {
   position: relative;
@@ -100,34 +97,40 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: 30px 15px;
+  justify-content: flex-start;
+  padding-top: 10px;
+  padding-bottom: 30px;
 }
 
-.pendant-rig {
+/* El aparejo completo del collar */
+.necklace-rig {
   display: flex;
   flex-direction: column;
   align-items: center;
   position: relative;
+  transform-origin: 50% -50px;
   transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-/* --- ANIMACIÓN DE CAÍDA INICIAL DESDE ARRIBA --- */
-.pendant-rig.dropping {
-  animation: dropFromSky 1.4s cubic-bezier(0.175, 0.885, 0.32, 1.25) forwards;
+/* --- ANIMACIÓN DE CAÍDA REALISTA DESDE ARRIBA --- */
+.necklace-rig.dropping {
+  animation: necklaceDropIn 1.45s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards;
 }
 
-@keyframes dropFromSky {
+@keyframes necklaceDropIn {
   0% {
-    transform: translateY(-130vh);
+    transform: translateY(-135vh);
     opacity: 0;
   }
-  60% {
-    transform: translateY(20px);
+  65% {
+    transform: translateY(22px);
     opacity: 1;
   }
-  80% {
-    transform: translateY(-10px);
+  82% {
+    transform: translateY(-12px);
+  }
+  92% {
+    transform: translateY(6px);
   }
   100% {
     transform: translateY(0);
@@ -135,96 +138,101 @@ body {
   }
 }
 
-/* Cadena que sostiene el dije */
-.chain-stem {
+/* ====================================================
+   CORDÓN EN "V" (COLLAR REAL)
+   ==================================================== */
+.necklace-cord-wrap {
+  width: 480px;
+  max-width: 95vw;
+  height: 250px;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  transition: opacity 0.5s ease, transform 0.5s ease;
-  transform-origin: top center;
-}
-
-.chain-cord {
-  width: 3px;
-  height: 140px;
-  background: linear-gradient(to bottom, 
-    #333 0%, 
-    #a8a8b2 30%, 
-    #555 70%, 
-    #c4c4cc 100%
-  );
-  box-shadow: 0 0 8px rgba(255, 255, 255, 0.15);
+  justify-content: center;
   position: relative;
+  transform-origin: 50% 0%;
+  transition: opacity 0.5s ease, transform 0.5s ease;
 }
 
-.chain-ring {
-  width: 14px;
-  height: 14px;
-  border: 2.5px solid #d0d0d8;
-  border-radius: 50%;
-  box-shadow: 0 0 6px rgba(255, 255, 255, 0.2);
+.necklace-svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  filter: drop-shadow(0 15px 20px rgba(0, 0, 0, 0.9));
 }
 
-.ring-bottom {
-  margin-top: -4px;
-  margin-bottom: -6px;
-  z-index: 5;
+/* Movimiento de vaivén pendular del cordón */
+.necklace-rig:not(.opened) .necklace-cord-wrap {
+  animation: cordHarmonicSwing 5.2s ease-in-out infinite;
+}
+
+@keyframes cordHarmonicSwing {
+  0% { transform: rotate(0deg); }
+  25% { transform: rotate(2.4deg); }
+  50% { transform: rotate(0deg); }
+  75% { transform: rotate(-2.4deg); }
+  100% { transform: rotate(0deg); }
 }
 
 /* ====================================================
-   EL LIBRO 3D (Colgante y luego Abierto)
+   DIJE Y LIBRETA (Cuelga con Inclinación Natural)
    ==================================================== */
+.pendant-anchor {
+  position: relative;
+  margin-top: -38px; /* Conecta exactamente con la argolla del collar */
+  transform-origin: 50% 10px;
+  display: flex;
+  justify-content: center;
+}
+
+/* Inclinación natural como en la foto original (~13 grados) y oscilación secundaria */
+.necklace-rig:not(.opened) .pendant-anchor {
+  transform: rotate(13deg);
+  animation: pendantNaturalLag 5.2s ease-in-out infinite;
+}
+
+@keyframes pendantNaturalLag {
+  0% { transform: rotate(13deg); }
+  25% { transform: rotate(16.5deg); }
+  50% { transform: rotate(13deg); }
+  75% { transform: rotate(9.5deg); }
+  100% { transform: rotate(13deg); }
+}
+
 .book-3d {
-  width: 250px;
-  height: 350px;
+  width: 245px;
+  height: 345px;
   position: relative;
   transform-style: preserve-3d;
   cursor: pointer;
   transition: width 0.9s cubic-bezier(0.4, 0, 0.2, 1),
               height 0.9s cubic-bezier(0.4, 0, 0.2, 1),
-              transform 0.9s cubic-bezier(0.4, 0, 0.2, 1);
+              transform 0.9s cubic-bezier(0.4, 0, 0.2, 1),
+              margin 0.9s cubic-bezier(0.4, 0, 0.2, 1);
   transform-origin: center center;
 }
 
-/* Balanceo suave de péndulo cuando está cerrado */
-.pendant-rig:not(.opened) .book-3d {
-  animation: subtlePendantSway 4.8s ease-in-out infinite;
-}
-
-@keyframes subtlePendantSway {
-  0% { transform: rotate(0deg); }
-  25% { transform: rotate(2.8deg); }
-  50% { transform: rotate(0deg); }
-  75% { transform: rotate(-2.8deg); }
-  100% { transform: rotate(0deg); }
-}
-
 .book-3d:hover:not(.opened) {
-  filter: drop-shadow(0 15px 30px rgba(0, 0, 0, 0.9)) drop-shadow(0 0 20px var(--burgundy-glow));
+  filter: drop-shadow(0 18px 35px rgba(0, 0, 0, 0.95)) drop-shadow(0 0 25px var(--burgundy-glow));
 }
 
 /* Cubierta Frontal */
 .book-cover-front {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  inset: 0;
   transform-origin: left center;
   transform-style: preserve-3d;
-  transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 1.25s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 20;
 }
 
-/* Cara Exterior de la Cubierta */
+/* Cara Exterior */
 .cover-exterior {
   position: absolute;
   inset: 0;
   background: radial-gradient(circle at 50% 40%, #1c1c22 0%, #0d0d10 100%);
   border-radius: 6px 14px 14px 6px;
   box-shadow: 
-    0 15px 35px rgba(0, 0, 0, 0.8),
-    inset 0 0 15px rgba(0, 0, 0, 0.9),
+    0 16px 35px rgba(0, 0, 0, 0.85),
+    inset 0 0 18px rgba(0, 0, 0, 0.9),
     inset 2px 2px 3px rgba(255, 255, 255, 0.1);
   padding: 16px;
   display: flex;
@@ -233,6 +241,27 @@ body {
   align-items: center;
   backface-visibility: hidden;
   border-left: 6px solid #09090b;
+}
+
+/* Orificio y argolla de donde cuelga el libro */
+.bail-hole {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 14px;
+  height: 14px;
+  background: #0a0a0d;
+  border: 2px solid #a4a4b0;
+  border-radius: 50%;
+  box-shadow: inset 0 0 4px #000, 0 0 6px rgba(255,255,255,0.25);
+  z-index: 25;
+}
+
+.bail-ring {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
 }
 
 .embossed-border {
@@ -247,17 +276,7 @@ body {
   padding: 15px;
   position: relative;
   box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
-}
-
-.collar-hook-hole {
-  position: absolute;
-  top: -8px;
-  width: 12px;
-  height: 12px;
-  background: #0b0b0e;
-  border: 2px solid #8e8e99;
-  border-radius: 50%;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.9);
+  margin-top: 10px;
 }
 
 .death-note-logo {
@@ -294,7 +313,7 @@ body {
   pointer-events: none;
 }
 
-/* Cara Interior de la Cubierta (reverso) */
+/* Reverso de la Cubierta */
 .cover-interior {
   position: absolute;
   inset: 0;
@@ -314,7 +333,6 @@ body {
   opacity: 0.2;
 }
 
-/* Cubierta Trasera */
 .book-cover-back {
   position: absolute;
   inset: 0;
@@ -324,7 +342,54 @@ body {
   z-index: 1;
 }
 
-/* PÁGINAS INTERIORES */
+/* ====================================================
+   ESTADO ABIERTO: SE EXPANDE Y SE ABRE EL LIBRO
+   ==================================================== */
+.necklace-rig.opened {
+  animation: none;
+}
+
+.necklace-rig.opened .necklace-cord-wrap {
+  opacity: 0;
+  transform: translateY(-80px) scale(0.8);
+  pointer-events: none;
+}
+
+.necklace-rig.opened .pendant-anchor {
+  transform: rotate(0deg) !important;
+  animation: none !important;
+  margin-top: 10px;
+}
+
+.necklace-rig.opened .book-3d {
+  width: 960px;
+  max-width: 95vw;
+  height: 640px;
+  max-height: 86vh;
+  cursor: default;
+  animation: none;
+  transform: rotate(0deg) !important;
+}
+
+.necklace-rig.opened .book-cover-front {
+  transform: rotateY(-180deg);
+  pointer-events: none;
+  opacity: 0.15;
+}
+
+.necklace-rig.opened .book-inside {
+  opacity: 1;
+  pointer-events: all;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.95), 0 0 30px var(--burgundy-glow);
+}
+
+.necklace-rig.opened .hint-container {
+  display: none;
+}
+
+/* ====================================================
+   PÁGINAS INTERIORES DEL DIARIO
+   ==================================================== */
 .book-inside {
   position: absolute;
   inset: 0;
@@ -339,7 +404,6 @@ body {
   z-index: 10;
 }
 
-/* Sombra central del lomo */
 .spine-shadow {
   position: absolute;
   top: 45px;
@@ -351,7 +415,6 @@ body {
   pointer-events: none;
 }
 
-/* Cinta marcapáginas elegante */
 .bookmark-ribbon {
   position: absolute;
   top: 10px;
@@ -365,49 +428,6 @@ body {
   pointer-events: none;
 }
 
-/* ====================================================
-   ESTADO ABIERTO DEL LIBRO (APERTURA 3D REAL)
-   ==================================================== */
-.pendant-rig.opened {
-  animation: none;
-}
-
-.pendant-rig.opened .chain-stem {
-  opacity: 0;
-  transform: translateY(-50px);
-  pointer-events: none;
-}
-
-.pendant-rig.opened .book-3d {
-  width: 960px;
-  max-width: 95vw;
-  height: 640px;
-  max-height: 86vh;
-  cursor: default;
-  animation: none;
-  transform: rotate(0deg) !important;
-}
-
-/* La cubierta rota 180 grados hacia la izquierda */
-.pendant-rig.opened .book-cover-front {
-  transform: rotateY(-180deg);
-  pointer-events: none;
-  opacity: 0.15; /* Sombra sutil detrás de la página izquierda */
-}
-
-.pendant-rig.opened .book-inside {
-  opacity: 1;
-  pointer-events: all;
-  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.95), 0 0 30px var(--burgundy-glow);
-}
-
-.pendant-rig.opened .hint-container {
-  display: none;
-}
-
-/* ====================================================
-   INTERIOR DEL DIARIO: NAVEGACIÓN Y PÁGINAS
-   ==================================================== */
 .inner-top-nav {
   display: flex;
   justify-content: space-between;
@@ -458,7 +478,6 @@ body {
   gap: 8px;
 }
 
-/* Despliegue de las dos páginas */
 .pages-spread {
   display: grid;
   grid-template-columns: 1fr 1.25fr;
@@ -479,7 +498,6 @@ body {
   overflow: hidden;
 }
 
-/* Efecto de papel fino */
 .journal-page::before {
   content: "";
   position: absolute;
@@ -533,7 +551,6 @@ body {
   background: var(--burgundy-accent);
 }
 
-/* Buscador */
 .search-box {
   margin-bottom: 10px;
 }
@@ -555,7 +572,6 @@ body {
   border-color: #8c8376;
 }
 
-/* Lista con Scroll */
 .entries-scroll-area {
   flex: 1;
   overflow-y: auto;
@@ -630,7 +646,7 @@ body {
   line-height: 1.5;
 }
 
-/* Formulario de Escritura (Página Derecha) */
+/* Formulario */
 .journal-form {
   display: flex;
   flex-direction: column;
@@ -675,7 +691,6 @@ body {
   color: #8d857a;
 }
 
-/* Área de renglones de cuaderno */
 .ruled-paper-container {
   flex: 1;
   display: flex;
@@ -711,7 +726,6 @@ body {
   font-style: italic;
 }
 
-/* Botones del Formulario */
 .journal-actions {
   display: flex;
   gap: 10px;
@@ -766,7 +780,7 @@ body {
   display: none !important;
 }
 
-/* Hint debajo del collar */
+/* Indicador de ayuda */
 .hint-container {
   margin-top: 25px;
   text-align: center;
@@ -795,9 +809,7 @@ body {
   50% { opacity: 1; transform: scale(1.02); text-shadow: 0 0 14px var(--burgundy-glow); color: #fff; }
 }
 
-/* ====================================================
-   MODAL DE REGLAS ESTÉTICO
-   ==================================================== */
+/* Modal */
 .aesthetic-modal {
   display: none;
   position: fixed;
@@ -895,10 +907,15 @@ body {
 }
 
 /* ====================================================
-   RESPONSIVIDAD (Móviles y Tablets)
+   RESPONSIVIDAD MÓVILES
    ==================================================== */
 @media (max-width: 860px) {
-  .pendant-rig.opened .book-3d {
+  .necklace-cord-wrap {
+    width: 320px;
+    height: 190px;
+  }
+
+  .necklace-rig.opened .book-3d {
     width: 95vw;
     height: auto;
     max-height: 90vh;
