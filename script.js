@@ -1,17 +1,20 @@
 /* ====================================================
-   DEATH NOTE • REPLICA EXACTA CON BASE DE DATOS Y PRIVACIDAD
-   - Carga automática desde el repositorio (data/entries.json)
-   - Contraseña para registros privados
+   DEATH NOTE • REPLICA EXACTA CON BASE DE DATOS EN LA NUBE REAL
+   - Sincronización en vivo entre PC y celular (Cloud Database)
+   - Contraseña y cifrado para notas privadas
    ==================================================== */
 
-// --- Estado Global ---
-const STORAGE_KEY = 'death_note_replica_db_v6';
+// --- Base de Datos en la Nube dedicada para este diario ---
+const CLOUD_API_URL = 'https://api.restful-api.dev/objects/ff808181a09d98f701a17035d7ed01e0';
+const STORAGE_KEY = 'death_note_replica_db_v7';
+
 let entries = [];
 let activeEntryId = null;
 let currentFilter = 'all'; // 'all', 'public', 'private'
 let pendingUnlockEntry = null;
 let soundEnabled = true;
 let isBookOpen = false;
+let isSyncing = false;
 
 // --- Elementos DOM ---
 const sceneStage = document.getElementById('scene-stage');
@@ -145,7 +148,7 @@ function playPaperRustle(startTime, duration = 0.45) {
   const gain = audioCtx.createGain();
   gain.gain.setValueAtTime(0.001, startTime);
   gain.gain.linearRampToValueAtTime(0.08, startTime + 0.04);
-  gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+  gain.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
 
   noise.connect(filter);
   filter.connect(gain);
@@ -197,7 +200,7 @@ soundToggle.addEventListener('click', (e) => {
 function showToast(msg) {
   toastNotify.textContent = msg;
   toastNotify.classList.add('show');
-  setTimeout(() => toastNotify.classList.remove('show'), 2600);
+  setTimeout(() => toastNotify.classList.remove('show'), 2800);
 }
 
 // ====================================================
@@ -471,9 +474,8 @@ privateToggle.addEventListener('change', () => {
 });
 
 // ====================================================
-// 4. BASE DE DATOS DEL REPOSITORIO (data/entries.json)
+// 4. CIFRADO Y SEGURIDAD PARA NOTAS PRIVADAS
 // ====================================================
-
 function hashPassword(str) {
   let hash = 0;
   for (let i = 0; i < str.length; i++) {
@@ -483,39 +485,79 @@ function hashPassword(str) {
   return 'dn_h_' + Math.abs(hash).toString(36);
 }
 
-// Cargar la base de datos: combina el archivo entries.json del repositorio con notas locales
-async function loadDatabase() {
-  let repoEntries = [];
-
-  try {
-    // Lee directamente el archivo data/entries.json del repositorio en GitHub
-    const res = await fetch('data/entries.json?t=' + Date.now());
-    if (res.ok) {
-      repoEntries = await res.json();
-    }
-  } catch (err) {
-    console.log('No se pudo cargar data/entries.json o modo offline', err);
+function encryptContent(text, pass) {
+  let result = '';
+  for (let i = 0; i < text.length; i++) {
+    result += String.fromCharCode(text.charCodeAt(i) ^ pass.charCodeAt(i % pass.length));
   }
-
-  let localEntries = [];
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    localEntries = raw ? JSON.parse(raw) : [];
-  } catch (e) {
-    localEntries = [];
-  }
-
-  // Unir notas del repositorio con las locales sin duplicados por ID
-  const map = new Map();
-  repoEntries.forEach(item => map.set(item.id, item));
-  localEntries.forEach(item => map.set(item.id, item));
-
-  entries = Array.from(map.values()).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-  renderEntriesList();
+  return btoa(encodeURIComponent(result));
 }
 
-function saveEntriesToStorage() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+function decryptContent(cipher, pass) {
+  try {
+    let raw = decodeURIComponent(atob(cipher));
+    let result = '';
+    for (let i = 0; i < raw.length; i++) {
+      result += String.fromCharCode(raw.charCodeAt(i) ^ pass.charCodeAt(i % pass.length));
+    }
+    return result;
+  } catch (e) {
+    return null;
+  }
+}
+
+// ====================================================
+// 5. BASE DE DATOS EN LA NUBE REAL (SINCRONIZACIÓN EN VIVO)
+// ====================================================
+
+// Cargar notas desde la nube
+async function fetchCloudDatabase() {
+  if (isSyncing) return;
+  try {
+    const res = await fetch(CLOUD_API_URL + '?t=' + Date.now());
+    if (res.ok) {
+      const json = await res.json();
+      if (json && json.data && Array.isArray(json.data.entries)) {
+        const cloudEntries = json.data.entries;
+
+        // Unir inteligentemente con notas locales
+        const map = new Map();
+        cloudEntries.forEach(item => map.set(item.id, item));
+        entries.forEach(item => {
+          if (!map.has(item.id)) map.set(item.id, item);
+        });
+
+        entries = Array.from(map.values()).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+        renderEntriesList();
+      }
+    }
+  } catch (err) {
+    console.warn('Conexión con nube en espera...', err);
+  }
+}
+
+// Subir notas a la nube
+async function pushToCloudDatabase() {
+  isSyncing = true;
+  try {
+    const payload = {
+      name: 'DeathNote_carlostommy113',
+      data: {
+        entries: entries
+      }
+    };
+    await fetch(CLOUD_API_URL, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    console.log('Sincronizado con la nube exitosamente');
+  } catch (err) {
+    console.error('Error subiendo a la nube:', err);
+  } finally {
+    isSyncing = false;
+  }
 }
 
 function updateDateDisplay() {
@@ -568,9 +610,17 @@ function verifyUnlockPassword() {
 
   if (enteredHash === pendingUnlockEntry.passwordHash) {
     unlockModal.classList.remove('active');
-    displayEntryInEditor(pendingUnlockEntry);
+    
+    // Si el contenido está cifrado, desencriptarlo
+    let decrypted = pendingUnlockEntry.content;
+    if (pendingUnlockEntry.encryptedContent) {
+      decrypted = decryptContent(pendingUnlockEntry.encryptedContent, pass);
+    }
+
+    const tempEntry = { ...pendingUnlockEntry, content: decrypted || pendingUnlockEntry.content };
+    displayEntryInEditor(tempEntry);
     playMagicalSound('save');
-    showToast('🗝️ Registro desbloqueado.');
+    showToast('🗝️ Registro desbloqueado con tu clave.');
     pendingUnlockEntry = null;
   } else {
     unlockErrorMsg.classList.remove('hidden');
@@ -648,7 +698,7 @@ function renderEntriesList(searchQuery = null) {
     
     const previewText = entry.isPrivate 
       ? '🔒 [Registro protegido con contraseña privada]' 
-      : escapeHTML(entry.content.substring(0, 42)) + (entry.content.length > 42 ? '...' : '');
+      : escapeHTML((entry.content || '').substring(0, 42)) + (entry.content && entry.content.length > 42 ? '...' : '');
 
     card.innerHTML = `
       <div class="card-top-line">
@@ -676,7 +726,7 @@ function escapeHTML(str) {
 }
 
 // Guardar / Actualizar nota
-noteForm.addEventListener('submit', (e) => {
+noteForm.addEventListener('submit', async (e) => {
   e.preventDefault();
 
   const title = entryTitleInput.value.trim();
@@ -705,10 +755,17 @@ noteForm.addEventListener('submit', (e) => {
     const index = entries.findIndex(item => item.id === activeEntryId);
     if (index !== -1) {
       entries[index].title = title;
-      entries[index].content = content;
       entries[index].isPrivate = isPrivate;
-      if (pass) {
-        entries[index].passwordHash = hashPassword(pass);
+      if (isPrivate) {
+        if (pass) {
+          entries[index].passwordHash = hashPassword(pass);
+          entries[index].encryptedContent = encryptContent(content, pass);
+          entries[index].content = '[CONTENIDO CIFRADO]';
+        }
+      } else {
+        entries[index].content = content;
+        entries[index].encryptedContent = null;
+        entries[index].passwordHash = null;
       }
       entries[index].updatedAt = Date.now();
     }
@@ -716,7 +773,8 @@ noteForm.addEventListener('submit', (e) => {
     const newEntry = {
       id: 'dn_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
       title: title,
-      content: content,
+      content: isPrivate ? '[CONTENIDO CIFRADO]' : content,
+      encryptedContent: isPrivate ? encryptContent(content, pass) : null,
       isPrivate: isPrivate,
       passwordHash: isPrivate ? hashPassword(pass) : null,
       date: dateFormatted,
@@ -727,19 +785,16 @@ noteForm.addEventListener('submit', (e) => {
   }
 
   playMagicalSound('save');
-  saveEntriesToStorage();
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
   renderEntriesList();
-  
-  if (activeEntryId) {
-    const cur = entries.find(e => e.id === activeEntryId);
-    if (cur) displayEntryInEditor(cur);
-  }
 
-  showToast(isPrivate ? '🔒 ¡Nota sellada con contraseña!' : '🌐 ¡Registro grabado con éxito!');
+  // Subir inmediatamente a la nube
+  await pushToCloudDatabase();
+  showToast(isPrivate ? '🔒 ¡Nota privada publicada en la nube con clave!' : '🌐 ¡Nota pública guardada y visible para todos!');
 
   const saveBtn = document.getElementById('save-btn');
   const originalHtml = saveBtn.innerHTML;
-  saveBtn.innerHTML = '<span>✔ ¡Grabado en la Death Note!</span>';
+  saveBtn.innerHTML = '<span>✔ ¡Grabado en la Nube!</span>';
   saveBtn.style.background = '#27ae60';
   setTimeout(() => {
     saveBtn.innerHTML = originalHtml;
@@ -756,16 +811,18 @@ newEntryBtn.addEventListener('click', (e) => {
 });
 
 // Eliminar
-deleteBtn.addEventListener('click', () => {
+deleteBtn.addEventListener('click', async () => {
   if (!activeEntryId) return;
 
   const confirmDelete = confirm('¿Deseas tachar y borrar definitivamente este registro?');
   if (confirmDelete) {
     playMagicalSound('delete');
     entries = entries.filter(item => item.id !== activeEntryId);
-    saveEntriesToStorage();
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+    renderEntriesList();
     clearEditor();
-    showToast('🗑️ Registro borrado.');
+    await pushToCloudDatabase();
+    showToast('🗑️ Registro eliminado de la nube.');
   }
 });
 
@@ -774,7 +831,7 @@ searchInput.addEventListener('input', (e) => {
   renderEntriesList(e.target.value);
 });
 
-// Exportar TXT y JSON de Base de Datos
+// Exportar TXT
 exportBtn.addEventListener('click', (e) => {
   e.stopPropagation();
   if (entries.length === 0) {
@@ -784,21 +841,20 @@ exportBtn.addEventListener('click', (e) => {
 
   playMagicalSound('save');
 
-  // Descargar archivo entries.json listo para el repositorio
   const jsonBlob = new Blob([JSON.stringify(entries, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(jsonBlob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = `entries.json`;
+  a.download = `death-note-registros-${new Date().toISOString().slice(0, 10)}.json`;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
-  showToast('💾 Base de datos (entries.json) descargada.');
+  showToast('💾 Copia de seguridad descargada.');
 });
 
 // ====================================================
-// 5. AMBIENTE VISUAL
+// 6. AMBIENTE VISUAL
 // ====================================================
 let sparkles = [];
 let ambientCtx = null;
@@ -847,13 +903,26 @@ function animateAmbient() {
 }
 
 // ====================================================
-// INICIALIZACIÓN
+// INICIALIZACIÓN Y SINCRONIZACIÓN AUTOMÁTICA
 // ====================================================
-window.addEventListener('DOMContentLoaded', () => {
+window.addEventListener('DOMContentLoaded', async () => {
   setupAmbientCanvas();
-  loadDatabase();
+  
+  // 1. Cargar local primero
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) entries = JSON.parse(raw);
+    renderEntriesList();
+  } catch(e) {}
+
+  // 2. Traer notas en vivo desde la nube
+  await fetchCloudDatabase();
+
   updateDateDisplay();
   physicsLoop();
+
+  // Consultar periódicamente la nube cada 6 segundos para recibir notas nuevas
+  setInterval(fetchCloudDatabase, 6000);
 
   setTimeout(() => {
     playMagicalSound('drop');
