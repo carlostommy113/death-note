@@ -11,19 +11,36 @@
 </head>
 <body>
 
-  <!-- Fondo oscuro minimalista y partículas tenues -->
+  <!-- Fondo oscuro atmosférico -->
   <div class="ambient-darkness"></div>
   <canvas id="ambient-canvas"></canvas>
 
-  <!-- Barra Superior -->
-  <header class="top-nav-bar">
-    <button id="open-direct-btn" class="nav-pill-btn" title="Abrir la Death Note">
-      📖 Abrir Death Note
-    </button>
-    <button id="sound-toggle" class="nav-pill-btn" title="Sonido">
-      <span id="sound-icon">✨</span>
-      <span class="sound-label">Melodía</span>
-    </button>
+  <!-- Barra Superior Principal (Limpia y nunca estorba dentro del libro) -->
+  <header class="main-top-bar" id="main-top-bar">
+    <div class="bar-left">
+      <button id="hang-necklace-btn" class="ui-pill-btn hidden" title="Cerrar y colgar en el collar">
+        ⬅ Colgar en el Collar
+      </button>
+      <button id="open-direct-btn" class="ui-pill-btn" title="Abrir la Death Note">
+        📖 Abrir Death Note
+      </button>
+    </div>
+
+    <!-- Pestañas activas solo cuando el libro está abierto -->
+    <div class="bar-center" id="open-tabs-group" style="display:none;">
+      <button id="tab-rules-btn" class="ui-tab-btn active">📜 Reglas Originales</button>
+      <button id="tab-memos-btn" class="ui-tab-btn">📝 Mis Registros (<span id="tab-count">0</span>)</button>
+    </div>
+
+    <div class="bar-right">
+      <button id="export-btn" class="ui-pill-btn" title="Exportar notas">
+        💾 Exportar
+      </button>
+      <button id="sound-toggle" class="ui-pill-btn" title="Sonido">
+        <span id="sound-icon">✨</span>
+        <span class="sound-label">Melodía</span>
+      </button>
+    </div>
   </header>
 
   <!-- ESCENARIO PRINCIPAL 3D -->
@@ -70,7 +87,7 @@
       <div class="death-book-cube" id="death-book-cube">
 
         <!-- ==============================================
-             PORTADA EXTERIOR (REPLICA ORIGINAL DEATH NOTE)
+             PORTADA EXTERIOR (REPLICA DEATH NOTE EXACTA)
              ============================================== -->
         <div class="book-face book-face-front" id="book-face-front">
           <div class="cover-matte-black">
@@ -90,14 +107,9 @@
             <!-- Cinta marcapáginas negra que cuelga por abajo -->
             <div class="black-ribbon-tail"></div>
           </div>
-
-          <!-- Reverso de la portada (al abrirse en 3D) -->
-          <div class="cover-reverse">
-            <div class="reverse-texture"></div>
-          </div>
         </div>
 
-        <!-- CARAS LATERALES 3D PARA VOLUMEN Y GROSOR REAL -->
+        <!-- CARAS LATERALES 3D PARA VOLUMEN REAL -->
         <div class="book-face book-face-spine"></div>
         <div class="book-face book-face-pages-right"></div>
         <div class="book-face book-face-pages-top"></div>
@@ -105,37 +117,21 @@
         <div class="book-face book-face-back"></div>
 
         <!-- ==============================================
-             INTERIOR EXACTO COMO EN LA FOTO DEL USUARIO:
-             - Página Izquierda: Negra con marco, emblema, "How to use it"
-             - Página Derecha: Crema con renglones y la Pluma Blanca
+             INTERIOR DEL LIBRO (REPLICA EXACTA DE LA FOTO)
+             - Izquierda: Negra con marco, sello y reglas
+             - Derecha: Crema con renglones
              ============================================== -->
         <div class="book-open-double-spread" id="book-open-double-spread">
           
-          <!-- Lomo central y cinta negra -->
+          <!-- Lomo central con sombra y cinta negra colgando por abajo -->
           <div class="inner-spine-fold"></div>
-          <div class="inner-black-ribbon"></div>
+          <div class="inner-black-ribbon-marker"></div>
 
-          <!-- Barra interna superior de herramientas -->
-          <div class="spread-top-toolbar">
-            <button id="close-book-btn" class="spread-action-btn" title="Cerrar libreta">
-              ⬅ Colgar en el Collar
-            </button>
-            <div class="spread-nav-center">
-              <button id="tab-rules-btn" class="tab-btn active">📜 Reglas Originales</button>
-              <button id="tab-memos-btn" class="tab-btn">📝 Mis Registros (<span id="tab-count">0</span>)</button>
-            </div>
-            <button id="export-btn" class="spread-action-btn" title="Exportar notas">
-              💾 Exportar
-            </button>
-          </div>
-
-          <!-- CONTENIDO DE LAS DOS PÁGINAS -->
+          <!-- CONTENIDO 50/50 DE LAS DOS PÁGINAS -->
           <div class="two-pages-container">
             
-            <!-- PÁGINA IZQUIERDA: PÁGINA NEGRA ORIGINAL DE LA DEATH NOTE -->
+            <!-- PÁGINA IZQUIERDA: PÁGINA NEGRA ORIGINAL -->
             <div class="page-half page-left-black">
-              
-              <!-- Marco ornamental blanco gótico -->
               <div class="gothic-frame-border">
                 
                 <!-- Esquinas góticas ornamentadas -->
@@ -144,14 +140,13 @@
                 <div class="corner-filigree bottom-left">❦</div>
                 <div class="corner-filigree bottom-right">❦</div>
 
-                <!-- CONTENIDO MODO 1: REGLAS ORIGINALES "HOW TO USE IT" -->
+                <!-- VISTA 1: REGLAS ORIGINALES "HOW TO USE IT" -->
                 <div id="rules-view" class="black-page-content active-view">
-                  <!-- Emblema circular Shinigami en la parte superior -->
+                  <!-- Sello circular del Shinigami arriba -->
                   <div class="shinigami-seal-circle">
                     <svg viewBox="0 0 100 100" class="seal-svg">
                       <circle cx="50" cy="50" r="44" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-dasharray="4,2"/>
                       <circle cx="50" cy="50" r="38" fill="#111114" stroke="#ffffff" stroke-width="1.5"/>
-                      <!-- Silueta estilizada de calavera / Shinigami -->
                       <circle cx="43" cy="45" r="4" fill="#ffffff"/>
                       <circle cx="57" cy="45" r="4" fill="#ffffff"/>
                       <path d="M 40 62 Q 50 67, 60 62" stroke="#ffffff" stroke-width="2" fill="none"/>
@@ -171,7 +166,7 @@
                   </div>
                 </div>
 
-                <!-- CONTENIDO MODO 2: LISTA DE NOTAS Y REGISTROS GUARDADOS -->
+                <!-- VISTA 2: LISTA DE NOTAS GUARDADAS -->
                 <div id="memos-view" class="black-page-content hidden-view">
                   <div class="memos-list-header">
                     <h2 class="dn-heading-rules">REGISTROS</h2>
@@ -190,32 +185,8 @@
               </div>
             </div>
 
-            <!-- PÁGINA DERECHA: PAPEL CREMA CON RENGLONES Y LA PLUMA BLANCA -->
+            <!-- PÁGINA DERECHA: PAPEL CREMA CON RENGLONES -->
             <div class="page-half page-right-cream">
-              
-              <!-- Pluma Blanca Original apoyada en la página -->
-              <div class="white-feather-quill" id="quill-pen" title="Pluma de la Death Note">
-                <svg viewBox="0 0 220 500" class="feather-svg">
-                  <!-- Sombra de la pluma -->
-                  <path d="M 110 30 C 145 100, 195 240, 135 410 L 110 475 L 85 410 C 25 240, 75 100, 110 30 Z" fill="rgba(0,0,0,0.18)" transform="translate(14, 14)"/>
-                  <!-- Barbas de la pluma blanca -->
-                  <path d="M 110 30 C 150 90, 190 230, 130 410 L 110 475 L 90 410 C 30 230, 70 90, 110 30 Z" fill="url(#feather-white-grad)"/>
-                  <!-- Cálamo / eje central -->
-                  <path d="M 110 30 Q 110 240, 110 495" stroke="#e8e8ea" stroke-width="4.5" stroke-linecap="round"/>
-                  <path d="M 110 30 Q 110 240, 110 495" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
-                  <!-- Punta metálica de escritura -->
-                  <polygon points="107,485 113,485 110,498" fill="#1b1b1f"/>
-
-                  <defs>
-                    <linearGradient id="feather-white-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stop-color="#ffffff"/>
-                      <stop offset="40%" stop-color="#fdfdfd"/>
-                      <stop offset="75%" stop-color="#f2f2f4"/>
-                      <stop offset="100%" stop-color="#dfdfe5"/>
-                    </linearGradient>
-                  </defs>
-                </svg>
-              </div>
 
               <!-- Encabezado de la página de escritura -->
               <div class="cream-page-top">
@@ -254,6 +225,30 @@
             </div>
 
           </div>
+
+          <!-- PLUMA BLANCA ELEGANTE (Apoyada al lado derecho de la libreta sin tapar el texto) -->
+          <div class="white-feather-quill-aside" id="quill-pen" title="Pluma de la Death Note">
+            <svg viewBox="0 0 160 520" class="feather-svg">
+              <defs>
+                <linearGradient id="feather-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#ffffff"/>
+                  <stop offset="35%" stop-color="#fcfcfc"/>
+                  <stop offset="70%" stop-color="#eeeeee"/>
+                  <stop offset="100%" stop-color="#d4d4d8"/>
+                </linearGradient>
+              </defs>
+              <!-- Sombra de la pluma -->
+              <path d="M 80 20 C 115 90, 145 230, 95 430 L 80 495 L 65 430 C 15 230, 45 90, 80 20 Z" fill="rgba(0,0,0,0.3)" transform="translate(10, 12)"/>
+              <!-- Cuerpo de la pluma -->
+              <path d="M 80 20 C 115 90, 145 230, 95 430 L 80 495 L 65 430 C 15 230, 45 90, 80 20 Z" fill="url(#feather-grad)"/>
+              <!-- Cañón central de la pluma -->
+              <path d="M 80 20 Q 80 260, 80 510" stroke="#f0f0f2" stroke-width="4" stroke-linecap="round"/>
+              <path d="M 80 20 Q 80 260, 80 510" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/>
+              <!-- Punta de pluma -->
+              <polygon points="77,500 83,500 80,514" fill="#18181b"/>
+            </svg>
+          </div>
+
         </div>
         <!-- Fin book-open-double-spread -->
 

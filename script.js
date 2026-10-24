@@ -16,6 +16,8 @@ const bookWrapper = document.getElementById('death-book-3d-wrapper');
 const bookCube = document.getElementById('death-book-cube');
 const specularGlare = document.getElementById('specular-glare');
 const openDirectBtn = document.getElementById('open-direct-btn');
+const hangNecklaceBtn = document.getElementById('hang-necklace-btn');
+const openTabsGroup = document.getElementById('open-tabs-group');
 const closeBookBtn = document.getElementById('close-book-btn');
 const exportBtn = document.getElementById('export-btn');
 const soundToggle = document.getElementById('sound-toggle');
@@ -364,6 +366,11 @@ function openBook() {
 
   bookWrapper.classList.add('opened');
   updateDateDisplay();
+
+  // Actualizar botones de navegación superior
+  if (hangNecklaceBtn) hangNecklaceBtn.classList.remove('hidden');
+  if (openDirectBtn) openDirectBtn.classList.add('hidden');
+  if (openTabsGroup) openTabsGroup.style.display = 'flex';
 }
 
 function closeBook() {
@@ -372,6 +379,10 @@ function closeBook() {
 
   playMagicalSound('close');
   bookWrapper.classList.remove('opened');
+
+  if (hangNecklaceBtn) hangNecklaceBtn.classList.add('hidden');
+  if (openDirectBtn) openDirectBtn.classList.remove('hidden');
+  if (openTabsGroup) openTabsGroup.style.display = 'none';
 
   physics.x = 0;
   physics.y = 0;
@@ -384,10 +395,19 @@ openDirectBtn.addEventListener('click', (e) => {
   openBook();
 });
 
-closeBookBtn.addEventListener('click', (e) => {
-  e.stopPropagation();
-  closeBook();
-});
+if (hangNecklaceBtn) {
+  hangNecklaceBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    closeBook();
+  });
+}
+
+if (closeBookBtn) {
+  closeBookBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    closeBook();
+  });
+}
 
 // Pestañas de la Página Negra (Reglas vs Registros)
 tabRulesBtn.addEventListener('click', () => {

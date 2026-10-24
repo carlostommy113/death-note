@@ -1,17 +1,15 @@
 /* ====================================================
-   DEATH NOTE • REPLICA EXACTA (ESTILO FOTO)
-   Portada Negra Clásica, Hoja Izquierda Negra con Reglas
-   Hoja Derecha Crema con Renglones y Pluma Blanca
+   DEATH NOTE • REPLICA EXACTA Y PULIDA
+   Sin entrecortes, libreta 100% fiel a la foto
    ==================================================== */
 
 :root {
   --dn-black: #0c0c0f;
   --dn-page-black: #111114;
   --dn-cream-page: #fbf8f0;
-  --dn-line-color: #d8d1c2;
+  --dn-line-color: #dcd5c6;
   --dn-ink: #161514;
   --dn-red-accent: #9e1b29;
-  --dn-silver: #f5f5f7;
   --font-logo: 'Cinzel', serif;
   --font-gothic: 'MedievalSharp', cursive;
   --font-script: 'Nanum Pen Script', cursive;
@@ -39,13 +37,13 @@ body {
   user-select: none;
 }
 
-/* Fondo oscuro atmosférico */
+/* Fondo oscuro */
 .ambient-darkness {
   position: fixed;
   inset: 0;
   background: 
-    radial-gradient(circle at 50% 20%, rgba(30, 20, 35, 0.5) 0%, transparent 60%),
-    radial-gradient(circle at 80% 80%, rgba(15, 15, 22, 0.8) 0%, transparent 50%),
+    radial-gradient(circle at 50% 25%, rgba(28, 20, 32, 0.6) 0%, transparent 65%),
+    radial-gradient(circle at 80% 80%, rgba(12, 12, 18, 0.85) 0%, transparent 55%),
     #060608;
   pointer-events: none;
   z-index: 1;
@@ -60,20 +58,32 @@ body {
   z-index: 2;
 }
 
-/* Barra Superior */
-.top-nav-bar {
+/* ====================================================
+   BARRA SUPERIOR LIMPIA (FUERA DEL LIBRO)
+   ==================================================== */
+.main-top-bar {
   position: fixed;
-  top: 18px;
+  top: 16px;
+  left: 20px;
   right: 20px;
   display: flex;
-  gap: 10px;
-  z-index: 200;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 300;
+  pointer-events: none; /* Los hijos activan pointer-events */
 }
 
-.nav-pill-btn {
-  background: rgba(18, 18, 22, 0.88);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.16);
+.main-top-bar > div {
+  pointer-events: auto;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.ui-pill-btn {
+  background: rgba(18, 18, 24, 0.9);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
   color: #f2f2f7;
   font-family: var(--font-text);
   font-size: 0.82rem;
@@ -84,14 +94,39 @@ body {
   display: flex;
   align-items: center;
   gap: 8px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.7);
   transition: all 0.25s ease;
 }
 
-.nav-pill-btn:hover {
-  border-color: rgba(255, 255, 255, 0.4);
+.ui-pill-btn:hover {
+  border-color: rgba(255, 255, 255, 0.45);
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(158, 27, 41, 0.35);
+  box-shadow: 0 6px 20px rgba(158, 27, 41, 0.4);
+}
+
+.ui-tab-btn {
+  background: rgba(22, 22, 28, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #a0a0ae;
+  font-family: var(--font-text);
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 6px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(8px);
+}
+
+.ui-tab-btn.active {
+  background: #ffffff;
+  color: #0c0c0f;
+  border-color: #ffffff;
+  box-shadow: 0 2px 10px rgba(255, 255, 255, 0.25);
+}
+
+.hidden {
+  display: none !important;
 }
 
 /* ====================================================
@@ -120,7 +155,7 @@ body {
   transition: opacity 0.4s ease;
 }
 
-/* WRAPPER DEL DIJE / LIBRETA */
+/* WRAPPER DEL LIBRO */
 .death-book-3d-wrapper {
   position: absolute;
   top: 50%;
@@ -155,7 +190,7 @@ body {
 }
 
 /* ====================================================
-   1. PORTADA EXTERIOR (REPLICA DEATH NOTE EXACTA)
+   1. PORTADA CERRADA (REPLICA DEATH NOTE EXACTA)
    ==================================================== */
 .book-face-front {
   width: var(--book-w);
@@ -183,10 +218,8 @@ body {
   justify-content: flex-start;
   backface-visibility: hidden;
   border-left: 6px solid #08080a;
-  overflow: visible;
 }
 
-/* Argolla de fijación superior para el collar */
 .spine-collar-ring {
   position: absolute;
   top: 10px;
@@ -201,7 +234,6 @@ body {
   z-index: 30;
 }
 
-/* Logotipo DEATH NOTE idéntico al original */
 .dn-logo-wrap {
   width: 100%;
   margin-top: 45px;
@@ -226,22 +258,20 @@ body {
   stroke-width: 0.5px;
 }
 
-/* Cinta marcapáginas negra colgando por abajo */
 .black-ribbon-tail {
   position: absolute;
   bottom: -28px;
-  left: 30px;
+  left: 28px;
   width: 12px;
-  height: 45px;
+  height: 48px;
   background: #111114;
-  border-left: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.8);
+  border-left: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.85);
   border-radius: 0 0 2px 2px;
-  transform: rotate(4deg);
+  transform: rotate(5deg);
   z-index: 25;
 }
 
-/* Reflejo de luz dinámico según movimiento */
 .specular-glare {
   position: absolute;
   width: 250%;
@@ -254,28 +284,7 @@ body {
   opacity: 0.5;
 }
 
-/* Reverso de la cubierta */
-.cover-reverse {
-  position: absolute;
-  inset: 0;
-  background: #15151c;
-  border-radius: 12px 4px 4px 12px;
-  transform: rotateY(180deg);
-  backface-visibility: hidden;
-  box-shadow: inset 0 0 25px rgba(0,0,0,0.9);
-}
-
-.reverse-texture {
-  width: 100%;
-  height: 100%;
-  background: radial-gradient(#22222d 15%, transparent 16%);
-  background-size: 12px 12px;
-  opacity: 0.3;
-}
-
-/* ====================================================
-   CARAS 3D LATERALES (GROSOR DEL LIBRO)
-   ==================================================== */
+/* Caras laterales 3D */
 .book-face-spine {
   width: var(--book-depth);
   height: var(--book-h);
@@ -341,7 +350,7 @@ body {
 }
 
 /* ====================================================
-   ESTADO ABIERTO: DOBLE PÁGINA EXACTA A LA FOTO
+   ESTADO ABIERTO: REPLICA EXACTA Y SIN CORTES
    ==================================================== */
 .death-book-3d-wrapper.opened {
   cursor: default;
@@ -350,10 +359,10 @@ body {
   top: 0 !important;
   left: 0 !important;
   transform: none !important;
-  width: 1040px;
-  max-width: 96vw;
-  height: 660px;
-  max-height: 88vh;
+  width: 1000px;
+  max-width: 95vw;
+  height: 640px;
+  max-height: 86vh;
 }
 
 .death-book-3d-wrapper.opened .dynamic-cord-svg {
@@ -365,10 +374,9 @@ body {
   display: none;
 }
 
+/* Ocultar portada frontal al abrir para eliminar letras fantasma y bordes cortados */
 .death-book-3d-wrapper.opened .book-face-front {
-  transform: rotateY(-180deg);
-  pointer-events: none;
-  opacity: 0.12;
+  display: none !important;
 }
 
 .death-book-3d-wrapper.opened .book-open-double-spread {
@@ -376,111 +384,57 @@ body {
   pointer-events: all;
 }
 
-/* CONTENEDOR DE LA DOBLE PÁGINA ABIERTA */
+/* CONTENEDOR DE LA LIBRETA ABIERTA */
 .book-open-double-spread {
   position: absolute;
   inset: 0;
   background: #09090b;
   border-radius: 8px;
-  padding: 12px;
+  padding: 10px;
   display: flex;
-  flex-direction: column;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.6s ease 0.4s;
-  box-shadow: 0 35px 90px rgba(0, 0, 0, 0.98), 0 0 35px rgba(0,0,0,0.9);
+  transition: opacity 0.5s ease 0.3s;
+  box-shadow: 0 35px 90px rgba(0, 0, 0, 0.98), 0 0 40px rgba(0,0,0,0.9);
   z-index: 50;
-  border: 3px solid #1c1c22;
+  border: 2px solid #1a1a20;
 }
 
-/* Pliegue central del lomo y cinta negra */
+/* Pliegue central del lomo */
 .inner-spine-fold {
   position: absolute;
-  top: 48px;
-  bottom: 12px;
-  left: calc(50% - 12px);
-  width: 24px;
-  background: linear-gradient(to right, rgba(0,0,0,0.4), rgba(0,0,0,0.85), rgba(0,0,0,0.4));
-  z-index: 40;
+  top: 10px;
+  bottom: 10px;
+  left: calc(50% - 10px);
+  width: 20px;
+  background: linear-gradient(to right, rgba(0,0,0,0.35), rgba(0,0,0,0.8), rgba(0,0,0,0.35));
+  z-index: 30;
   pointer-events: none;
 }
 
-.inner-black-ribbon {
+/* Cinta marcapáginas que cuelga elegantemente por abajo */
+.inner-black-ribbon-marker {
   position: absolute;
-  top: 8px;
+  top: 10px;
+  bottom: -35px;
   left: 50%;
   transform: translateX(-50%);
-  width: 12px;
-  height: 120px;
+  width: 11px;
   background: #111114;
   border-left: 1px solid rgba(255, 255, 255, 0.15);
   box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.85);
   border-radius: 0 0 2px 2px;
-  z-index: 45;
+  z-index: 35;
   pointer-events: none;
 }
 
-/* Barra interna de herramientas */
-.spread-top-toolbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 4px 10px 10px 10px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  margin-bottom: 8px;
-}
-
-.spread-action-btn {
-  background: rgba(26, 26, 32, 0.9);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  color: #dcdce6;
-  font-family: var(--font-text);
-  font-size: 0.82rem;
-  font-weight: 500;
-  padding: 6px 14px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.spread-action-btn:hover {
-  background: rgba(40, 40, 52, 1);
-  color: #fff;
-  border-color: rgba(255, 255, 255, 0.3);
-  transform: translateY(-1px);
-}
-
-.spread-nav-center {
-  display: flex;
-  gap: 8px;
-}
-
-.tab-btn {
-  background: #18181f;
-  border: 1px solid #33333d;
-  color: #9c9ca8;
-  font-family: var(--font-text);
-  font-size: 0.82rem;
-  font-weight: 600;
-  padding: 5px 14px;
-  border-radius: 20px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.tab-btn.active {
-  background: #ffffff;
-  color: #0c0c0f;
-  border-color: #ffffff;
-}
-
-/* CONTENEDOR 50/50 DE LAS DOS PÁGINAS */
+/* Dos Páginas 50/50 */
 .two-pages-container {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  flex: 1;
-  min-height: 0;
+  gap: 14px;
+  width: 100%;
+  height: 100%;
 }
 
 .page-half {
@@ -489,7 +443,7 @@ body {
   flex-direction: column;
   position: relative;
   overflow: hidden;
-  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.4);
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
 }
 
 /* ====================================================
@@ -498,26 +452,25 @@ body {
 .page-left-black {
   background-color: var(--dn-page-black);
   color: #ffffff;
-  padding: 16px;
+  padding: 14px;
   user-select: text;
 }
 
-/* Marco ornamental blanco gótico */
 .gothic-frame-border {
-  border: 1.5px solid rgba(255, 255, 255, 0.4);
+  border: 1.5px solid rgba(255, 255, 255, 0.38);
   width: 100%;
   height: 100%;
   position: relative;
-  padding: 20px 24px;
+  padding: 18px 22px;
   display: flex;
   flex-direction: column;
-  box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.8);
+  box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.85);
 }
 
 .corner-filigree {
   position: absolute;
-  font-size: 1.4rem;
-  color: rgba(255, 255, 255, 0.7);
+  font-size: 1.3rem;
+  color: rgba(255, 255, 255, 0.65);
   pointer-events: none;
   line-height: 1;
 }
@@ -526,13 +479,12 @@ body {
 .corner-filigree.bottom-left { bottom: 6px; left: 8px; }
 .corner-filigree.bottom-right { bottom: 6px; right: 8px; }
 
-/* Contenido de Reglas */
 .black-page-content {
   flex: 1;
   display: flex;
   flex-direction: column;
   overflow-y: auto;
-  padding-right: 4px;
+  padding-right: 6px;
 }
 
 .black-page-content.hidden-view {
@@ -548,9 +500,9 @@ body {
 }
 
 .shinigami-seal-circle {
-  width: 65px;
-  height: 65px;
-  margin: 0 auto 8px auto;
+  width: 58px;
+  height: 58px;
+  margin: 0 auto 6px auto;
 }
 
 .seal-svg {
@@ -560,8 +512,8 @@ body {
 
 .dn-heading-rules {
   font-family: var(--font-logo);
-  font-size: 1.6rem;
-  letter-spacing: 0.25em;
+  font-size: 1.5rem;
+  letter-spacing: 0.22em;
   text-align: center;
   color: #ffffff;
   margin-bottom: 2px;
@@ -569,40 +521,40 @@ body {
 
 .dn-sub-rules {
   font-family: var(--font-gothic);
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   font-style: italic;
   text-align: center;
   color: #dcdce6;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
 }
 
 .dn-num-rules {
   font-family: var(--font-logo);
-  font-size: 1.2rem;
+  font-size: 1.15rem;
   text-align: center;
   color: #ffffff;
-  margin-bottom: 14px;
+  margin-bottom: 12px;
 }
 
 .dn-rules-body {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  font-size: 0.86rem;
-  line-height: 1.6;
-  color: #d4d4de;
+  gap: 10px;
+  font-size: 0.84rem;
+  line-height: 1.55;
+  color: #d2d2dc;
 }
 
 .rule-jap {
-  font-size: 0.8rem;
-  color: #9e9ea8;
-  margin-top: 6px;
+  font-size: 0.78rem;
+  color: #9898a4;
+  margin-top: 4px;
   line-height: 1.5;
   border-top: 1px dashed rgba(255, 255, 255, 0.15);
   padding-top: 8px;
 }
 
-/* Vista de Registros Guardados en la página negra */
+/* Lista de memorias en la página negra */
 .memos-list-header {
   display: flex;
   justify-content: space-between;
@@ -689,28 +641,14 @@ body {
 }
 
 /* ====================================================
-   PÁGINA DERECHA: PAPEL CREMA CON RENGLONES Y PLUMA
+   PÁGINA DERECHA: PAPEL CREMA CON RENGLONES
    ==================================================== */
 .page-right-cream {
   background-color: var(--dn-cream-page);
   color: var(--dn-ink);
-  padding: 20px 24px;
+  padding: 18px 22px;
   position: relative;
   user-select: text;
-}
-
-/* Pluma Blanca Original */
-.white-feather-quill {
-  position: absolute;
-  top: 15px;
-  right: -25px;
-  width: 175px;
-  height: 420px;
-  pointer-events: none;
-  z-index: 35;
-  transform: rotate(-16deg);
-  filter: drop-shadow(0 15px 18px rgba(0, 0, 0, 0.25));
-  transition: transform 0.4s ease;
 }
 
 .cream-page-top {
@@ -719,9 +657,7 @@ body {
   align-items: center;
   border-bottom: 2px solid var(--dn-line-color);
   padding-bottom: 6px;
-  margin-bottom: 10px;
-  position: relative;
-  z-index: 2;
+  margin-bottom: 8px;
 }
 
 .cream-page-watermark {
@@ -755,8 +691,6 @@ body {
   flex: 1;
   min-height: 0;
   gap: 8px;
-  position: relative;
-  z-index: 2;
 }
 
 .cream-input-line {
@@ -772,7 +706,7 @@ body {
   background: transparent;
   border: none;
   border-bottom: 2px solid var(--dn-line-color);
-  padding: 6px 2px;
+  padding: 4px 2px;
   outline: none;
   transition: border-color 0.2s;
 }
@@ -815,7 +749,7 @@ body {
     var(--dn-line-color) 32px
   );
   line-height: 32px;
-  padding: 4px 6px;
+  padding: 2px 6px;
   font-family: var(--font-script);
   font-size: 1.65rem;
   letter-spacing: 0.04em;
@@ -882,8 +816,26 @@ body {
   background: #751422;
 }
 
-.hidden {
-  display: none !important;
+/* ====================================================
+   PLUMA BLANCA ELEGANTE AL LADO DEL LIBRO
+   (Nunca tapa el texto ni las líneas)
+   ==================================================== */
+.white-feather-quill-aside {
+  position: absolute;
+  top: 30px;
+  right: -60px;
+  width: 140px;
+  height: 480px;
+  pointer-events: none;
+  z-index: 60;
+  transform: rotate(14deg);
+  filter: drop-shadow(0 15px 22px rgba(0, 0, 0, 0.45));
+  transition: transform 0.4s ease;
+}
+
+.feather-svg {
+  width: 100%;
+  height: 100%;
 }
 
 /* Indicador HUD inferior */
@@ -915,7 +867,9 @@ body {
   50% { opacity: 1; text-shadow: 0 0 10px rgba(255, 255, 255, 0.4); color: #fff; }
 }
 
-/* Responsividad para Móviles */
+/* ====================================================
+   RESPONSIVIDAD MÓVILES
+   ==================================================== */
 @media (max-width: 860px) {
   :root {
     --book-w: 200px;
@@ -935,7 +889,7 @@ body {
     overflow-y: auto;
   }
 
-  .inner-spine-fold, .inner-black-ribbon {
+  .inner-spine-fold, .inner-black-ribbon-marker {
     display: none;
   }
 
@@ -943,7 +897,7 @@ body {
     min-height: 400px;
   }
 
-  .white-feather-quill {
+  .white-feather-quill-aside {
     display: none;
   }
 }
