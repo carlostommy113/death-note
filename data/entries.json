@@ -1,0 +1,11 @@
+[
+  {
+    "id": "entry_bienvenida",
+    "title": "Pacto de la Death Note",
+    "content": "Bienvenido a este diario secreto. Las notas escritas aquí quedarán grabadas para siempre. Si un registro tiene candado, solo quien posea la contraseña secreta podrá desbloquearlo y leer su mensaje.",
+    "date": "24 de octubre de 2026",
+    "isPrivate": false,
+    "passwordHash": null,
+    "createdAt": 1729792800000
+  }
+]

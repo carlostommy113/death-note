@@ -8,10 +8,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Great+Vibes&family=MedievalSharp&family=Montserrat:wght@300;400;500;600&family=Nanum+Pen+Script&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
-  
-  <!-- Firebase SDK para Base de Datos en la Nube (Opcional y compatible con GitHub Pages) -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
 
@@ -37,11 +33,8 @@
     </div>
 
     <div class="bar-right">
-      <button id="cloud-config-btn" class="ui-pill-btn cloud-btn" title="Configurar Base de Datos en la Nube">
-        ☁️ Nube / Base de Datos
-      </button>
-      <button id="export-btn" class="ui-pill-btn" title="Exportar notas">
-        💾 Exportar
+      <button id="export-btn" class="ui-pill-btn" title="Descargar copia de seguridad de las notas">
+        💾 Exportar Notas
       </button>
       <button id="sound-toggle" class="ui-pill-btn" title="Sonido">
         <span id="sound-icon">✨</span>
@@ -163,7 +156,7 @@
                   </div>
                 </div>
 
-                <!-- VISTA 2: LISTA DE NOTAS GUARDADAS CON FILTROS (PÚBLICA / PRIVADA) -->
+                <!-- VISTA 2: LISTA DE NOTAS GUARDADAS CON FILTROS -->
                 <div id="memos-view" class="black-page-content hidden-view">
                   <div class="memos-list-header">
                     <h2 class="dn-heading-rules">REGISTROS</h2>
@@ -194,9 +187,6 @@
               <div class="cream-page-top">
                 <span class="cream-page-watermark">DEATH NOTE</span>
                 <div class="cream-top-actions">
-                  <button id="share-link-btn" class="share-pill-btn hidden" title="Copiar enlace para compartir">
-                    🔗 Compartir Link
-                  </button>
                   <button id="new-entry-btn" class="new-entry-black-btn">+ Nuevo Registro</button>
                 </div>
               </div>
@@ -222,7 +212,7 @@
                   </div>
                 </div>
 
-                <!-- Campo de Contraseña (Aparece solo si está activada la opción Privada) -->
+                <!-- Campo de Contraseña Secreta -->
                 <div id="password-field-wrap" class="password-field-row hidden">
                   <span class="lock-icon-tag">🔒 Clave Secreta:</span>
                   <input type="password" id="entry-password" class="password-input" placeholder="Introduce una contraseña para sellar esta nota...">
@@ -284,13 +274,13 @@
   </main>
 
   <!-- ==============================================
-       MODAL 1: DESBLOQUEO DE NOTA CON CONTRASEÑA
+       MODAL: DESBLOQUEO DE NOTA CON CONTRASEÑA
        ============================================== -->
   <div id="unlock-modal" class="aesthetic-popup-modal">
     <div class="popup-card">
       <div class="popup-lock-icon">🔒</div>
       <h3 class="popup-title">REGISTRO SELLADO</h3>
-      <p class="popup-subtitle">Esta nota fue protegida con una contraseña secreta. Solo quien posea la clave puede desencriptar su contenido.</p>
+      <p class="popup-subtitle">Esta nota fue protegida con una contraseña secreta. Solo quien posea la clave puede desbloquear su contenido.</p>
       
       <div class="popup-input-group">
         <input type="password" id="unlock-pass-input" placeholder="Introduce la contraseña..." autocomplete="off">
@@ -300,33 +290,6 @@
       <div class="popup-actions">
         <button id="cancel-unlock-btn" class="popup-btn-cancel">Cancelar</button>
         <button id="confirm-unlock-btn" class="popup-btn-confirm">Desbloquear 🗝️</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ==============================================
-       MODAL 2: CONFIGURACIÓN BASE DE DATOS EN LA NUBE (FIREBASE / GITHUB)
-       ============================================== -->
-  <div id="cloud-modal" class="aesthetic-popup-modal">
-    <div class="popup-card large-popup">
-      <button class="popup-close-x" id="close-cloud-modal">&times;</button>
-      <div class="popup-lock-icon">☁️</div>
-      <h3 class="popup-title">BASE DE DATOS EN LA NUBE</h3>
-      <p class="popup-subtitle">Conecta tu Death Note a <strong>Firebase Firestore gratuito</strong> para que tus notas públicas queden guardadas en la nube y cualquier persona que entre a tu link de GitHub Pages las pueda ver en tiempo real.</p>
-
-      <div class="cloud-status-badge" id="cloud-status-badge">
-        <span class="status-dot"></span> <span id="cloud-status-text">Modo Local & Enlaces Compartibles Activo</span>
-      </div>
-
-      <div class="cloud-form-body">
-        <label class="cloud-label">Configuración Firebase (JSON o apiKey / projectId):</label>
-        <textarea id="firebase-config-input" class="cloud-config-textarea" placeholder='Pega aquí tu configuración de Firebase:&#10;{&#10;  "apiKey": "AIzaSy...",&#10;  "projectId": "tu-proyecto-death-note",&#10;  "appId": "1:..."&#10;}'></textarea>
-        <p class="cloud-hint">💡 <em>Si no tienes Firebase aún, ¡no te preocupes! El botón <strong>"🔗 Compartir Link"</strong> genera enlaces directos que funcionan de inmediato en GitHub sin necesidad de configurar nada.</em></p>
-      </div>
-
-      <div class="popup-actions">
-        <button id="disconnect-cloud-btn" class="popup-btn-cancel">Desconectar</button>
-        <button id="save-cloud-btn" class="popup-btn-confirm">Conectar Nube ✨</button>
       </div>
     </div>
   </div>
