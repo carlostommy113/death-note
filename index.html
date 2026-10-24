@@ -3,239 +3,273 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Death Note • Diario Secreto 3D</title>
+  <title>DEATH NOTE • Original Replica</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Great+Vibes&family=Marcellus&family=Montserrat:wght@300;400;500;600&family=Nanum+Pen+Script&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Great+Vibes&family=MedievalSharp&family=Montserrat:wght@300;400;500;600&family=Nanum+Pen+Script&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <!-- Fondo estético cósmico y partículas -->
-  <div class="stars-bg"></div>
+  <!-- Fondo oscuro minimalista y partículas tenues -->
+  <div class="ambient-darkness"></div>
   <canvas id="ambient-canvas"></canvas>
 
-  <!-- Botones Superiores Flotantes -->
-  <div class="top-floating-bar">
-    <button id="open-direct-btn" class="glow-pill-btn" title="Abrir directamente el diario">
-      📖 Abrir Diario
+  <!-- Barra Superior -->
+  <header class="top-nav-bar">
+    <button id="open-direct-btn" class="nav-pill-btn" title="Abrir la Death Note">
+      📖 Abrir Death Note
     </button>
-    <button id="sound-toggle" class="glow-pill-btn sound-btn" title="Activar/Silenciar sonido">
+    <button id="sound-toggle" class="nav-pill-btn" title="Sonido">
       <span id="sound-icon">✨</span>
-      <span class="sound-label">Sonido</span>
+      <span class="sound-label">Melodía</span>
     </button>
-  </div>
+  </header>
 
-  <!-- ==============================================
-       ESCENARIO 3D INTERACTIVO
-       ============================================== -->
-  <main class="interactive-stage" id="interactive-stage">
+  <!-- ESCENARIO PRINCIPAL 3D -->
+  <main class="scene-stage" id="scene-stage">
     
-    <!-- SVG DINÁMICO DEL COLLAR (Se redibuja en tiempo real según la física) -->
+    <!-- SVG DEL CORDÓN DEL COLLAR EN "V" DINÁMICO -->
     <svg id="dynamic-cord-svg" class="dynamic-cord-svg">
       <defs>
-        <!-- Patrón de trenzado de cuero negro para el cordón -->
         <pattern id="braid-pattern" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
-          <rect width="6" height="6" fill="#111114"/>
-          <path d="M 0 0 L 6 6 M 6 0 L 0 6" stroke="#383842" stroke-width="1.6"/>
-          <circle cx="3" cy="3" r="1" fill="#5a5a6a"/>
+          <rect width="6" height="6" fill="#111113"/>
+          <path d="M 0 0 L 6 6 M 6 0 L 0 6" stroke="#32323a" stroke-width="1.6"/>
+          <circle cx="3" cy="3" r="1" fill="#4d4d58"/>
         </pattern>
-        
-        <!-- Gradiente metálico para la argolla -->
-        <linearGradient id="metal-silver-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stop-color="#555"/>
-          <stop offset="35%" stop-color="#fff"/>
-          <stop offset="70%" stop-color="#888"/>
+        <linearGradient id="silver-metal-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#444"/>
+          <stop offset="35%" stop-color="#ffffff"/>
+          <stop offset="70%" stop-color="#777"/>
           <stop offset="100%" stop-color="#222"/>
         </linearGradient>
-
-        <filter id="cord-shadow-filter">
-          <feDropShadow dx="0" dy="10" stdDeviation="6" flood-color="#000" flood-opacity="0.85"/>
-        </filter>
       </defs>
 
-      <!-- Sombra de los cordones -->
-      <path id="svg-cord-left-shadow" class="svg-shadow" fill="none" stroke="rgba(0,0,0,0.7)" stroke-width="8" stroke-linecap="round"/>
-      <path id="svg-cord-right-shadow" class="svg-shadow" fill="none" stroke="rgba(0,0,0,0.7)" stroke-width="8" stroke-linecap="round"/>
-
-      <!-- Cordón izquierdo dinámico -->
-      <path id="svg-cord-left-base" fill="none" stroke="#151518" stroke-width="6" stroke-linecap="round"/>
+      <path id="svg-cord-left-shadow" class="cord-shadow" fill="none" stroke="rgba(0,0,0,0.85)" stroke-width="8" stroke-linecap="round"/>
+      <path id="svg-cord-right-shadow" class="cord-shadow" fill="none" stroke="rgba(0,0,0,0.85)" stroke-width="8" stroke-linecap="round"/>
+      
+      <path id="svg-cord-left-base" fill="none" stroke="#131316" stroke-width="6" stroke-linecap="round"/>
       <path id="svg-cord-left-texture" fill="none" stroke="url(#braid-pattern)" stroke-width="5" stroke-linecap="round"/>
-      <path id="svg-cord-left-shine" fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="1.3" stroke-linecap="round"/>
+      <path id="svg-cord-left-shine" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1.2" stroke-linecap="round"/>
 
-      <!-- Cordón derecho dinámico -->
-      <path id="svg-cord-right-base" fill="none" stroke="#151518" stroke-width="6" stroke-linecap="round"/>
+      <path id="svg-cord-right-base" fill="none" stroke="#131316" stroke-width="6" stroke-linecap="round"/>
       <path id="svg-cord-right-texture" fill="none" stroke="url(#braid-pattern)" stroke-width="5" stroke-linecap="round"/>
-      <path id="svg-cord-right-shine" fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="1.3" stroke-linecap="round"/>
+      <path id="svg-cord-right-shine" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1.2" stroke-linecap="round"/>
 
-      <!-- Argolla metálica donde se unen los cordones y cuelga el libro -->
-      <g id="svg-ring-group" filter="url(#cord-shadow-filter)">
-        <circle id="svg-ring-outer" cx="0" cy="0" r="14" fill="none" stroke="url(#metal-silver-grad)" stroke-width="4.5"/>
-        <circle id="svg-ring-inner" cx="0" cy="0" r="9" fill="#09090b"/>
-        <circle id="svg-bail-small" cx="0" cy="12" r="7" fill="none" stroke="url(#metal-silver-grad)" stroke-width="3"/>
+      <g id="svg-ring-group">
+        <circle id="svg-ring-outer" cx="0" cy="0" r="13" fill="none" stroke="url(#silver-metal-gradient)" stroke-width="4"/>
+        <circle id="svg-ring-inner" cx="0" cy="0" r="8" fill="#08080a"/>
+        <circle id="svg-bail-small" cx="0" cy="11" r="6" fill="none" stroke="url(#silver-metal-gradient)" stroke-width="2.5"/>
       </g>
     </svg>
 
-    <!-- CONTENEDOR 3D DEL DIJE / LIBRETA -->
-    <div class="book-3d-wrapper" id="book-3d-wrapper">
+    <!-- WRAPPER DEL LIBRO 3D (FÍSICA DE ARRASTRE Y APERTURA) -->
+    <div class="death-book-3d-wrapper" id="death-book-3d-wrapper">
       
-      <!-- EL LIBRO FÍSICO 3D (con grosor, lomo y hojas reales) -->
-      <div class="book-cube-3d" id="book-cube-3d">
+      <!-- CUERPO 3D DEL LIBRO -->
+      <div class="death-book-cube" id="death-book-cube">
 
-        <!-- CARA FRONTAL (Cubierta de cuero con relieve) -->
-        <div class="face face-front" id="book-front-cover">
-          <div class="front-leather-texture">
-            <!-- Argolla superior del dije -->
-            <div class="dije-bail-ring"></div>
+        <!-- ==============================================
+             PORTADA EXTERIOR (REPLICA ORIGINAL DEATH NOTE)
+             ============================================== -->
+        <div class="book-face book-face-front" id="book-face-front">
+          <div class="cover-matte-black">
+            <!-- Argolla superior para el collar -->
+            <div class="spine-collar-ring"></div>
 
-            <div class="gold-foil-border">
-              <h1 class="foil-title">DEATH NOTE</h1>
-              <div class="foil-ornament">✧ &nbsp; ✦ &nbsp; ✧</div>
-              <p class="foil-subtitle">DIARIO SECRETO</p>
+            <!-- Tipografía icónica original de DEATH NOTE -->
+            <div class="dn-logo-wrap">
+              <svg class="dn-logo-svg" viewBox="0 0 320 80">
+                <text x="50%" y="58%" text-anchor="middle" dominant-baseline="middle" class="dn-svg-text">DEATH NOTE</text>
+              </svg>
             </div>
-            <div class="dynamic-light-glare" id="light-glare"></div>
+
+            <!-- Brillo de iluminación dinámica -->
+            <div class="specular-glare" id="specular-glare"></div>
+
+            <!-- Cinta marcapáginas negra que cuelga por abajo -->
+            <div class="black-ribbon-tail"></div>
           </div>
 
-          <!-- Reverso de la cubierta frontal (al abrirse en 3D se ve esto) -->
-          <div class="front-cover-inside">
-            <div class="inside-lining"></div>
+          <!-- Reverso de la portada (al abrirse en 3D) -->
+          <div class="cover-reverse">
+            <div class="reverse-texture"></div>
           </div>
         </div>
 
-        <!-- CARAS 3D PARA DARLE GROSOR REAL AL LIBRO -->
-        <div class="face face-spine"></div>
-        <div class="face face-pages-right"></div>
-        <div class="face face-pages-top"></div>
-        <div class="face face-pages-bottom"></div>
-        <div class="face face-back"></div>
+        <!-- CARAS LATERALES 3D PARA VOLUMEN Y GROSOR REAL -->
+        <div class="book-face book-face-spine"></div>
+        <div class="book-face book-face-pages-right"></div>
+        <div class="book-face book-face-pages-top"></div>
+        <div class="book-face book-face-pages-bottom"></div>
+        <div class="book-face book-face-back"></div>
 
         <!-- ==============================================
-             INTERIOR DEL DIARIO (PÁGINAS ABIERTAS)
+             INTERIOR EXACTO COMO EN LA FOTO DEL USUARIO:
+             - Página Izquierda: Negra con marco, emblema, "How to use it"
+             - Página Derecha: Crema con renglones y la Pluma Blanca
              ============================================== -->
-        <div class="book-open-spread" id="book-open-spread">
+        <div class="book-open-double-spread" id="book-open-double-spread">
           
-          <div class="spine-crease"></div>
-          <div class="bookmark-red-ribbon"></div>
+          <!-- Lomo central y cinta negra -->
+          <div class="inner-spine-fold"></div>
+          <div class="inner-black-ribbon"></div>
 
-          <!-- Cabecera de controles -->
-          <div class="open-top-bar">
-            <button id="close-book-btn" class="diary-mini-btn" title="Cerrar libreta">
-              ⬅ Colgar Collar
+          <!-- Barra interna superior de herramientas -->
+          <div class="spread-top-toolbar">
+            <button id="close-book-btn" class="spread-action-btn" title="Cerrar libreta">
+              ⬅ Colgar en el Collar
             </button>
-            <span class="diary-brand-title">DEATH NOTE • DIARIO</span>
-            <div class="open-bar-actions">
-              <button id="rules-btn" class="diary-mini-btn rules-glow" title="Reglas">
-                📜 Reglas
-              </button>
-              <button id="export-btn" class="diary-mini-btn" title="Guardar copia">
-                💾 Exportar
-              </button>
+            <div class="spread-nav-center">
+              <button id="tab-rules-btn" class="tab-btn active">📜 Reglas Originales</button>
+              <button id="tab-memos-btn" class="tab-btn">📝 Mis Registros (<span id="tab-count">0</span>)</button>
             </div>
+            <button id="export-btn" class="spread-action-btn" title="Exportar notas">
+              💾 Exportar
+            </button>
           </div>
 
-          <!-- Hojas de papel -->
-          <div class="diary-pages-columns">
+          <!-- CONTENIDO DE LAS DOS PÁGINAS -->
+          <div class="two-pages-container">
             
-            <!-- PÁGINA IZQUIERDA: Lista de memorias -->
-            <section class="parchment-sheet sheet-left">
-              <div class="sheet-header">
-                <h2 class="sheet-title">Memorias Guardadas</h2>
-                <span id="entry-count" class="badge-count">0 notas</span>
-              </div>
-
-              <div class="search-input-wrap">
-                <input type="text" id="search-input" placeholder="🔍 Buscar recuerdo...">
-              </div>
-
-              <div class="memos-scroll" id="entries-list">
-                <!-- Se llena con JavaScript -->
-              </div>
-            </section>
-
-            <!-- PÁGINA DERECHA: Editor manuscrito -->
-            <section class="parchment-sheet sheet-right">
-              <div class="sheet-header">
-                <h2 class="sheet-title" id="editor-heading">Nuevo Pensamiento</h2>
-                <button id="new-entry-btn" class="create-pill-btn">+ Nueva</button>
-              </div>
-
-              <form id="note-form" class="editor-form">
-                <input type="hidden" id="entry-id" value="">
+            <!-- PÁGINA IZQUIERDA: PÁGINA NEGRA ORIGINAL DE LA DEATH NOTE -->
+            <div class="page-half page-left-black">
+              
+              <!-- Marco ornamental blanco gótico -->
+              <div class="gothic-frame-border">
                 
-                <div class="input-underline-group">
-                  <input type="text" id="entry-title" class="underline-input" placeholder="Título o Asunto..." required autocomplete="off">
+                <!-- Esquinas góticas ornamentadas -->
+                <div class="corner-filigree top-left">❦</div>
+                <div class="corner-filigree top-right">❦</div>
+                <div class="corner-filigree bottom-left">❦</div>
+                <div class="corner-filigree bottom-right">❦</div>
+
+                <!-- CONTENIDO MODO 1: REGLAS ORIGINALES "HOW TO USE IT" -->
+                <div id="rules-view" class="black-page-content active-view">
+                  <!-- Emblema circular Shinigami en la parte superior -->
+                  <div class="shinigami-seal-circle">
+                    <svg viewBox="0 0 100 100" class="seal-svg">
+                      <circle cx="50" cy="50" r="44" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-dasharray="4,2"/>
+                      <circle cx="50" cy="50" r="38" fill="#111114" stroke="#ffffff" stroke-width="1.5"/>
+                      <!-- Silueta estilizada de calavera / Shinigami -->
+                      <circle cx="43" cy="45" r="4" fill="#ffffff"/>
+                      <circle cx="57" cy="45" r="4" fill="#ffffff"/>
+                      <path d="M 40 62 Q 50 67, 60 62" stroke="#ffffff" stroke-width="2" fill="none"/>
+                      <polygon points="50,48 47,55 53,55" fill="#ffffff"/>
+                    </svg>
+                  </div>
+
+                  <h2 class="dn-heading-rules">DEATH NOTE</h2>
+                  <h3 class="dn-sub-rules">How to use it</h3>
+                  <div class="dn-num-rules">I</div>
+
+                  <div class="dn-rules-body">
+                    <p class="rule-eng">The human whose name is written in this note shall die.</p>
+                    <p class="rule-eng">This note will not take effect unless the writer has the person's face in their mind when writing his/her name. Therefore, people sharing the same name will not be affected.</p>
+                    <p class="rule-eng">If the cause of death is written within the next 40 seconds of writing the person's name, it will happen.</p>
+                    <p class="rule-jap">このノートに名前を書かれた人間は死ぬ。書く人物の顔が頭に入っていないと効果はない。ゆえに同姓同名の人物に一遍に効果は得られない。</p>
+                  </div>
                 </div>
 
-                <div class="meta-date-row">
-                  <span id="auto-date" class="date-text"></span>
-                  <span class="feather-tag">✒ Tinta permanente</span>
+                <!-- CONTENIDO MODO 2: LISTA DE NOTAS Y REGISTROS GUARDADOS -->
+                <div id="memos-view" class="black-page-content hidden-view">
+                  <div class="memos-list-header">
+                    <h2 class="dn-heading-rules">REGISTROS</h2>
+                    <span id="entry-count" class="badge-black">0 entradas</span>
+                  </div>
+
+                  <div class="search-wrap-black">
+                    <input type="text" id="search-input" placeholder="Buscar entre tus registros...">
+                  </div>
+
+                  <div class="memos-scroll-black" id="entries-list">
+                    <!-- Dinámico -->
+                  </div>
                 </div>
 
-                <div class="notebook-lines-area">
-                  <textarea id="entry-content" class="handwritten-textarea" placeholder="Escribe aquí tu pensamiento, secreto o recuerdo especial..." required></textarea>
+              </div>
+            </div>
+
+            <!-- PÁGINA DERECHA: PAPEL CREMA CON RENGLONES Y LA PLUMA BLANCA -->
+            <div class="page-half page-right-cream">
+              
+              <!-- Pluma Blanca Original apoyada en la página -->
+              <div class="white-feather-quill" id="quill-pen" title="Pluma de la Death Note">
+                <svg viewBox="0 0 220 500" class="feather-svg">
+                  <!-- Sombra de la pluma -->
+                  <path d="M 110 30 C 145 100, 195 240, 135 410 L 110 475 L 85 410 C 25 240, 75 100, 110 30 Z" fill="rgba(0,0,0,0.18)" transform="translate(14, 14)"/>
+                  <!-- Barbas de la pluma blanca -->
+                  <path d="M 110 30 C 150 90, 190 230, 130 410 L 110 475 L 90 410 C 30 230, 70 90, 110 30 Z" fill="url(#feather-white-grad)"/>
+                  <!-- Cálamo / eje central -->
+                  <path d="M 110 30 Q 110 240, 110 495" stroke="#e8e8ea" stroke-width="4.5" stroke-linecap="round"/>
+                  <path d="M 110 30 Q 110 240, 110 495" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+                  <!-- Punta metálica de escritura -->
+                  <polygon points="107,485 113,485 110,498" fill="#1b1b1f"/>
+
+                  <defs>
+                    <linearGradient id="feather-white-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stop-color="#ffffff"/>
+                      <stop offset="40%" stop-color="#fdfdfd"/>
+                      <stop offset="75%" stop-color="#f2f2f4"/>
+                      <stop offset="100%" stop-color="#dfdfe5"/>
+                    </linearGradient>
+                  </defs>
+                </svg>
+              </div>
+
+              <!-- Encabezado de la página de escritura -->
+              <div class="cream-page-top">
+                <span class="cream-page-watermark">DEATH NOTE</span>
+                <button id="new-entry-btn" class="new-entry-black-btn">+ Nuevo Registro</button>
+              </div>
+
+              <!-- Formulario de escritura en renglones -->
+              <form id="note-form" class="cream-form">
+                <input type="hidden" id="entry-id" value="">
+
+                <div class="cream-input-line">
+                  <input type="text" id="entry-title" class="cream-title-field" placeholder="Nombre o Título..." required autocomplete="off">
                 </div>
 
-                <div class="editor-buttons-row">
-                  <button type="submit" id="save-btn" class="save-ink-btn">
-                    <span>✨ Grabar en la Death Note</span>
+                <div class="cream-meta-line">
+                  <span id="auto-date" class="cream-date-label"></span>
+                  <span class="cream-cue">Tinta indeleble</span>
+                </div>
+
+                <!-- Renglones de cuaderno auténticos -->
+                <div class="cream-lined-box">
+                  <textarea id="entry-content" class="cream-textarea" placeholder="Escribe aquí tu pensamiento, secreto o recuerdo... Las palabras quedarán grabadas." required></textarea>
+                </div>
+
+                <div class="cream-actions">
+                  <button type="submit" id="save-btn" class="save-dn-btn">
+                    <span>✒ Escribir en la Death Note</span>
                   </button>
-                  <button type="button" id="delete-btn" class="delete-ink-btn hidden">
-                    <span>✕ Borrar</span>
+                  <button type="button" id="delete-btn" class="delete-dn-btn hidden">
+                    <span>✕ Tachar / Eliminar</span>
                   </button>
                 </div>
               </form>
-            </section>
+
+            </div>
 
           </div>
         </div>
-        <!-- Fin book-open-spread -->
+        <!-- Fin book-open-double-spread -->
 
       </div>
-      <!-- Fin book-cube-3d -->
+      <!-- Fin death-book-cube -->
 
-      <!-- Indicador interactivo para el usuario -->
-      <div class="interactive-hud" id="interactive-hud">
-        <div class="hud-main-text">🖱️ Arrastra con el ratón o dedo para moverlo en 3D</div>
-        <div class="hud-sub-text">Toca el dije o pulsa "Abrir Diario" para escribir</div>
+      <!-- Indicador interactivo inferior -->
+      <div class="stage-hud" id="stage-hud">
+        <p class="hud-line-1">🖱️ Arrastra con el ratón o dedo para moverlo en 3D</p>
+        <p class="hud-line-2">Haz clic sobre la Death Note para abrirla</p>
       </div>
 
     </div>
-    <!-- Fin book-3d-wrapper -->
+    <!-- Fin death-book-3d-wrapper -->
 
   </main>
-
-  <!-- ==============================================
-       MODAL DE REGLAS ESTÉTICO
-       ============================================== -->
-  <div id="rules-modal" class="rules-lightbox">
-    <div class="lightbox-card">
-      <button class="lightbox-close" id="close-rules-btn">&times;</button>
-      <div class="lightbox-header">
-        <span class="lightbox-sub">REGLAS DEL DIARIO</span>
-        <h3 class="lightbox-title">HOW TO USE IT</h3>
-        <div class="lightbox-ornament">✧ &nbsp; ✦ &nbsp; ✧</div>
-      </div>
-      <div class="lightbox-rules-list">
-        <div class="rule-block">
-          <span class="rule-num">I.</span>
-          <p>Toda memoria escrita en esta Death Note quedará a salvo y guardada automáticamente en tu navegador.</p>
-        </div>
-        <div class="rule-block">
-          <span class="rule-num">II.</span>
-          <p>Puedes agarrar el collar con tu ratón o pantalla táctil para moverlo libremente en el espacio 3D.</p>
-        </div>
-        <div class="rule-block">
-          <span class="rule-num">III.</span>
-          <p>Al hacer clic sobre el dije, se abrirá el libro en 3D para revelar las páginas de tu diario personal.</p>
-        </div>
-        <div class="rule-block">
-          <span class="rule-num">IV.</span>
-          <p>Al pulsar "Colgar Collar", la libreta volverá a cerrarse con animación suave y quedará colgada en su estado original.</p>
-        </div>
-      </div>
-      <button class="save-ink-btn full-width" id="close-rules-btn-2">Entendido ✨</button>
-    </div>
-  </div>
 
   <script src="script.js"></script>
 </body>
