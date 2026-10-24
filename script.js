@@ -34,8 +34,7 @@ const newEntryBtn = document.getElementById('new-entry-btn');
 const deleteBtn = document.getElementById('delete-btn');
 const searchInput = document.getElementById('search-input');
 
-// Canvases
-const necklaceCanvas = document.getElementById('necklace-canvas');
+// Canvas ambiental
 const ambientCanvas = document.getElementById('ambient-canvas');
 
 // ====================================================
@@ -138,45 +137,7 @@ soundToggle.addEventListener('click', (e) => {
 });
 
 // ====================================================
-// 2. PROCESAMIENTO DEL COLLAR (Fondo transparente dinámico)
-// ====================================================
-function loadAndCleanNecklaceImage() {
-  const img = new Image();
-  img.src = 'assets/necklace.png';
-  img.crossOrigin = 'Anonymous';
-
-  img.onload = () => {
-    necklaceCanvas.width = img.naturalWidth;
-    necklaceCanvas.height = img.naturalHeight;
-    const ctx = necklaceCanvas.getContext('2d');
-    ctx.drawImage(img, 0, 0);
-
-    const imgData = ctx.getImageData(0, 0, necklaceCanvas.width, necklaceCanvas.height);
-    const data = imgData.data;
-
-    // Eliminar el fondo blanco y suavizar bordes
-    for (let i = 0; i < data.length; i += 4) {
-      const r = data[i];
-      const g = data[i + 1];
-      const b = data[i + 2];
-
-      // Detección de blancos y casi-blancos
-      const brightness = (r + g + b) / 3;
-      if (brightness > 240) {
-        data[i + 3] = 0; // 100% transparente
-      } else if (brightness > 215) {
-        // Transición suave anti-aliasing
-        const factor = (240 - brightness) / 25;
-        data[i + 3] = Math.round(data[i + 3] * factor);
-      }
-    }
-
-    ctx.putImageData(imgData, 0, 0);
-  };
-}
-
-// ====================================================
-// 3. AMBIENTE VISUAL (Partículas y cenizas flotantes)
+// 2. AMBIENTE VISUAL (Partículas y cenizas flotantes)
 // ====================================================
 let particles = [];
 let ambientCtx = null;
@@ -490,7 +451,6 @@ exportBtn.addEventListener('click', () => {
 // INICIALIZACIÓN
 // ====================================================
 window.addEventListener('DOMContentLoaded', () => {
-  loadAndCleanNecklaceImage();
   setupAmbientCanvas();
   loadEntries();
   updateDateDisplay();
