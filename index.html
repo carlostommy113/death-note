@@ -8,6 +8,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Great+Vibes&family=MedievalSharp&family=Montserrat:wght@300;400;500;600&family=Nanum+Pen+Script&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  
+  <!-- Firebase SDK para Base de Datos en la Nube (Opcional y compatible con GitHub Pages) -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
 
@@ -15,7 +19,7 @@
   <div class="ambient-darkness"></div>
   <canvas id="ambient-canvas"></canvas>
 
-  <!-- Barra Superior Principal (Limpia y nunca estorba dentro del libro) -->
+  <!-- Barra Superior Principal -->
   <header class="main-top-bar" id="main-top-bar">
     <div class="bar-left">
       <button id="hang-necklace-btn" class="ui-pill-btn hidden" title="Cerrar y colgar en el collar">
@@ -26,13 +30,16 @@
       </button>
     </div>
 
-    <!-- Pestañas activas solo cuando el libro está abierto -->
+    <!-- Pestañas del centro (activas al abrir el libro) -->
     <div class="bar-center" id="open-tabs-group" style="display:none;">
       <button id="tab-rules-btn" class="ui-tab-btn active">📜 Reglas Originales</button>
-      <button id="tab-memos-btn" class="ui-tab-btn">📝 Mis Registros (<span id="tab-count">0</span>)</button>
+      <button id="tab-memos-btn" class="ui-tab-btn">📝 Registros (<span id="tab-count">0</span>)</button>
     </div>
 
     <div class="bar-right">
+      <button id="cloud-config-btn" class="ui-pill-btn cloud-btn" title="Configurar Base de Datos en la Nube">
+        ☁️ Nube / Base de Datos
+      </button>
       <button id="export-btn" class="ui-pill-btn" title="Exportar notas">
         💾 Exportar
       </button>
@@ -91,20 +98,15 @@
              ============================================== -->
         <div class="book-face book-face-front" id="book-face-front">
           <div class="cover-matte-black">
-            <!-- Argolla superior para el collar -->
             <div class="spine-collar-ring"></div>
 
-            <!-- Tipografía icónica original de DEATH NOTE -->
             <div class="dn-logo-wrap">
               <svg class="dn-logo-svg" viewBox="0 0 320 80">
                 <text x="50%" y="58%" text-anchor="middle" dominant-baseline="middle" class="dn-svg-text">DEATH NOTE</text>
               </svg>
             </div>
 
-            <!-- Brillo de iluminación dinámica -->
             <div class="specular-glare" id="specular-glare"></div>
-
-            <!-- Cinta marcapáginas negra que cuelga por abajo -->
             <div class="black-ribbon-tail"></div>
           </div>
         </div>
@@ -118,12 +120,9 @@
 
         <!-- ==============================================
              INTERIOR DEL LIBRO (REPLICA EXACTA DE LA FOTO)
-             - Izquierda: Negra con marco, sello y reglas
-             - Derecha: Crema con renglones
              ============================================== -->
         <div class="book-open-double-spread" id="book-open-double-spread">
           
-          <!-- Lomo central con sombra y cinta negra colgando por abajo -->
           <div class="inner-spine-fold"></div>
           <div class="inner-black-ribbon-marker"></div>
 
@@ -134,7 +133,6 @@
             <div class="page-half page-left-black">
               <div class="gothic-frame-border">
                 
-                <!-- Esquinas góticas ornamentadas -->
                 <div class="corner-filigree top-left">❦</div>
                 <div class="corner-filigree top-right">❦</div>
                 <div class="corner-filigree bottom-left">❦</div>
@@ -142,7 +140,6 @@
 
                 <!-- VISTA 1: REGLAS ORIGINALES "HOW TO USE IT" -->
                 <div id="rules-view" class="black-page-content active-view">
-                  <!-- Sello circular del Shinigami arriba -->
                   <div class="shinigami-seal-circle">
                     <svg viewBox="0 0 100 100" class="seal-svg">
                       <circle cx="50" cy="50" r="44" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-dasharray="4,2"/>
@@ -166,11 +163,17 @@
                   </div>
                 </div>
 
-                <!-- VISTA 2: LISTA DE NOTAS GUARDADAS -->
+                <!-- VISTA 2: LISTA DE NOTAS GUARDADAS CON FILTROS (PÚBLICA / PRIVADA) -->
                 <div id="memos-view" class="black-page-content hidden-view">
                   <div class="memos-list-header">
                     <h2 class="dn-heading-rules">REGISTROS</h2>
                     <span id="entry-count" class="badge-black">0 entradas</span>
+                  </div>
+
+                  <div class="memos-filters-row">
+                    <button id="filter-all" class="filter-mini-btn active">Todas</button>
+                    <button id="filter-public" class="filter-mini-btn">🌐 Públicas</button>
+                    <button id="filter-private" class="filter-mini-btn">🔒 Privadas</button>
                   </div>
 
                   <div class="search-wrap-black">
@@ -188,10 +191,14 @@
             <!-- PÁGINA DERECHA: PAPEL CREMA CON RENGLONES -->
             <div class="page-half page-right-cream">
 
-              <!-- Encabezado de la página de escritura -->
               <div class="cream-page-top">
                 <span class="cream-page-watermark">DEATH NOTE</span>
-                <button id="new-entry-btn" class="new-entry-black-btn">+ Nuevo Registro</button>
+                <div class="cream-top-actions">
+                  <button id="share-link-btn" class="share-pill-btn hidden" title="Copiar enlace para compartir">
+                    🔗 Compartir Link
+                  </button>
+                  <button id="new-entry-btn" class="new-entry-black-btn">+ Nuevo Registro</button>
+                </div>
               </div>
 
               <!-- Formulario de escritura en renglones -->
@@ -204,7 +211,21 @@
 
                 <div class="cream-meta-line">
                   <span id="auto-date" class="cream-date-label"></span>
-                  <span class="cream-cue">Tinta indeleble</span>
+                  
+                  <!-- Switch de Privacidad / Contraseña -->
+                  <div class="privacy-control-wrap">
+                    <label class="privacy-toggle" title="Proteger con contraseña para que nadie la pueda ver sin la clave">
+                      <input type="checkbox" id="private-toggle">
+                      <span class="toggle-slider"></span>
+                      <span class="toggle-text" id="toggle-label">🌐 Pública</span>
+                    </label>
+                  </div>
+                </div>
+
+                <!-- Campo de Contraseña (Aparece solo si está activada la opción Privada) -->
+                <div id="password-field-wrap" class="password-field-row hidden">
+                  <span class="lock-icon-tag">🔒 Clave Secreta:</span>
+                  <input type="password" id="entry-password" class="password-input" placeholder="Introduce una contraseña para sellar esta nota...">
                 </div>
 
                 <!-- Renglones de cuaderno auténticos -->
@@ -226,7 +247,7 @@
 
           </div>
 
-          <!-- PLUMA BLANCA ELEGANTE (Apoyada al lado derecho de la libreta sin tapar el texto) -->
+          <!-- PLUMA BLANCA ELEGANTE AL LADO DERECHO -->
           <div class="white-feather-quill-aside" id="quill-pen" title="Pluma de la Death Note">
             <svg viewBox="0 0 160 520" class="feather-svg">
               <defs>
@@ -237,14 +258,10 @@
                   <stop offset="100%" stop-color="#d4d4d8"/>
                 </linearGradient>
               </defs>
-              <!-- Sombra de la pluma -->
               <path d="M 80 20 C 115 90, 145 230, 95 430 L 80 495 L 65 430 C 15 230, 45 90, 80 20 Z" fill="rgba(0,0,0,0.3)" transform="translate(10, 12)"/>
-              <!-- Cuerpo de la pluma -->
               <path d="M 80 20 C 115 90, 145 230, 95 430 L 80 495 L 65 430 C 15 230, 45 90, 80 20 Z" fill="url(#feather-grad)"/>
-              <!-- Cañón central de la pluma -->
               <path d="M 80 20 Q 80 260, 80 510" stroke="#f0f0f2" stroke-width="4" stroke-linecap="round"/>
               <path d="M 80 20 Q 80 260, 80 510" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/>
-              <!-- Punta de pluma -->
               <polygon points="77,500 83,500 80,514" fill="#18181b"/>
             </svg>
           </div>
@@ -265,6 +282,57 @@
     <!-- Fin death-book-3d-wrapper -->
 
   </main>
+
+  <!-- ==============================================
+       MODAL 1: DESBLOQUEO DE NOTA CON CONTRASEÑA
+       ============================================== -->
+  <div id="unlock-modal" class="aesthetic-popup-modal">
+    <div class="popup-card">
+      <div class="popup-lock-icon">🔒</div>
+      <h3 class="popup-title">REGISTRO SELLADO</h3>
+      <p class="popup-subtitle">Esta nota fue protegida con una contraseña secreta. Solo quien posea la clave puede desencriptar su contenido.</p>
+      
+      <div class="popup-input-group">
+        <input type="password" id="unlock-pass-input" placeholder="Introduce la contraseña..." autocomplete="off">
+      </div>
+      <p id="unlock-error-msg" class="popup-error hidden">❌ Contraseña incorrecta. Acceso denegado.</p>
+
+      <div class="popup-actions">
+        <button id="cancel-unlock-btn" class="popup-btn-cancel">Cancelar</button>
+        <button id="confirm-unlock-btn" class="popup-btn-confirm">Desbloquear 🗝️</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==============================================
+       MODAL 2: CONFIGURACIÓN BASE DE DATOS EN LA NUBE (FIREBASE / GITHUB)
+       ============================================== -->
+  <div id="cloud-modal" class="aesthetic-popup-modal">
+    <div class="popup-card large-popup">
+      <button class="popup-close-x" id="close-cloud-modal">&times;</button>
+      <div class="popup-lock-icon">☁️</div>
+      <h3 class="popup-title">BASE DE DATOS EN LA NUBE</h3>
+      <p class="popup-subtitle">Conecta tu Death Note a <strong>Firebase Firestore gratuito</strong> para que tus notas públicas queden guardadas en la nube y cualquier persona que entre a tu link de GitHub Pages las pueda ver en tiempo real.</p>
+
+      <div class="cloud-status-badge" id="cloud-status-badge">
+        <span class="status-dot"></span> <span id="cloud-status-text">Modo Local & Enlaces Compartibles Activo</span>
+      </div>
+
+      <div class="cloud-form-body">
+        <label class="cloud-label">Configuración Firebase (JSON o apiKey / projectId):</label>
+        <textarea id="firebase-config-input" class="cloud-config-textarea" placeholder='Pega aquí tu configuración de Firebase:&#10;{&#10;  "apiKey": "AIzaSy...",&#10;  "projectId": "tu-proyecto-death-note",&#10;  "appId": "1:..."&#10;}'></textarea>
+        <p class="cloud-hint">💡 <em>Si no tienes Firebase aún, ¡no te preocupes! El botón <strong>"🔗 Compartir Link"</strong> genera enlaces directos que funcionan de inmediato en GitHub sin necesidad de configurar nada.</em></p>
+      </div>
+
+      <div class="popup-actions">
+        <button id="disconnect-cloud-btn" class="popup-btn-cancel">Desconectar</button>
+        <button id="save-cloud-btn" class="popup-btn-confirm">Conectar Nube ✨</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast de Notificaciones -->
+  <div id="toast-notify" class="toast-notify"></div>
 
   <script src="script.js"></script>
 </body>
