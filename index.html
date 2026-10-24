@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Death Note - Diario Secreto</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800;900&family=Great+Vibes&family=MedievalSharp&family=Montserrat:wght@300;400;600&family=Nanum+Pen+Script&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Capa de partículas y niebla ambiental -->
+  <div class="mist-overlay"></div>
+  <canvas id="ambient-canvas"></canvas>
+
+  <!-- Control de Sonido -->
+  <button id="sound-toggle" class="sound-btn" title="Activar/Silenciar Efectos de Sonido">
+    <span id="sound-icon">🔊</span>
+  </button>
+
+  <!-- ==================== PANTALLA INICIAL: EL COLLAR ==================== -->
+  <section id="necklace-screen" class="screen active">
+    <div class="necklace-container" id="necklace-trigger">
+      <div class="chain-wrapper">
+        <canvas id="necklace-canvas" class="necklace-image"></canvas>
+      </div>
+      
+      <div class="call-to-action">
+        <h1 class="death-title">DEATH NOTE</h1>
+        <p class="pulse-text">Toca el collar o la pantalla para abrir la libreta</p>
+        <div class="shinigami-hint">“El humano que use este diario...”</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== PANTALLA DEL DIARIO / LIBRETA ==================== -->
+  <section id="book-screen" class="screen">
+    <div class="book-controls-top">
+      <button id="close-book-btn" class="nav-btn" title="Cerrar libreta">
+        ⬅ Volver al Collar
+      </button>
+      <button id="rules-btn" class="nav-btn rules-highlight" title="Reglas">
+        📜 Reglas
+      </button>
+      <button id="export-btn" class="nav-btn" title="Descargar copia de tus notas">
+        💾 Exportar Notas
+      </button>
+    </div>
+
+    <!-- Contenedor del Libro 3D -->
+    <div class="death-book-container">
+      <div class="death-book" id="death-book">
+        
+        <!-- Cubierta / Borde exterior de cuero negro -->
+        <div class="book-leather-binding">
+          <div class="book-header-spine">
+            <span class="spine-title">DEATH NOTE • DIARIO</span>
+          </div>
+
+          <!-- Dos Páginas (Formato Libro) -->
+          <div class="book-pages-wrapper">
+            
+            <!-- PÁGINA IZQUIERDA: Lista de páginas / Entradas guardadas -->
+            <div class="book-page left-page">
+              <div class="page-inner">
+                <div class="page-header">
+                  <h2 class="gothic-heading">Entradas Escritas</h2>
+                  <span id="entry-count" class="badge">0 notas</span>
+                </div>
+                
+                <div class="search-bar-wrap">
+                  <input type="text" id="search-input" placeholder="Buscar en el diario...">
+                </div>
+
+                <div class="entries-list" id="entries-list">
+                  <!-- Se llena dinámicamente con JavaScript -->
+                  <div class="empty-state">
+                    <p>La libreta aún no tiene registros.</p>
+                    <p class="sub">Escribe tu primer pensamiento o memoria a la derecha.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- PÁGINA DERECHA: Editor de Escritura -->
+            <div class="book-page right-page">
+              <div class="page-inner">
+                <div class="page-header">
+                  <h2 class="gothic-heading" id="editor-heading">Nueva Entrada</h2>
+                  <button id="new-entry-btn" class="mini-btn" title="Crear nueva entrada en blanco">+ Nueva</button>
+                </div>
+
+                <form id="note-form" class="note-form">
+                  <input type="hidden" id="entry-id" value="">
+                  
+                  <div class="form-row">
+                    <input type="text" id="entry-title" class="lined-input title-input" placeholder="Título o Nombre del registro..." required autocomplete="off">
+                  </div>
+
+                  <div class="form-row meta-row">
+                    <span id="auto-date" class="date-badge"></span>
+                    <span class="feather-ink-cue">Tinta permanente</span>
+                  </div>
+
+                  <div class="form-row textarea-row">
+                    <textarea id="entry-content" class="lined-textarea" placeholder="Escribe aquí tu pensamiento, secreto o recuerdo... Las palabras escritas aquí quedarán grabadas en tu memoria." required></textarea>
+                  </div>
+
+                  <div class="form-actions">
+                    <button type="submit" id="save-btn" class="death-btn">
+                      <span class="btn-text">✒ Grabar en la Death Note</span>
+                    </button>
+                    <button type="button" id="delete-btn" class="death-btn delete-btn hidden">
+                      <span>✕ Eliminar Registro</span>
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== MODAL DE REGLAS (HOW TO USE IT) ==================== -->
+  <div id="rules-modal" class="modal">
+    <div class="modal-content">
+      <button class="close-modal-btn" id="close-rules-btn">&times;</button>
+      <h2 class="modal-title">HOW TO USE IT</h2>
+      <div class="rules-divider"></div>
+      <div class="rules-body">
+        <p class="rule-item"><strong>I.</strong> El humano que escriba en este diario tendrá sus memorias, planes y reflexiones a salvo de miradas ajenas.</p>
+        <p class="rule-item"><strong>II.</strong> Toda nota que escribas se guardará automáticamente en el almacenamiento local de tu navegador.</p>
+        <p class="rule-item"><strong>III.</strong> Si deseas borrar un registro, puedes pulsar "Eliminar Registro" y se borrará definitivamente.</p>
+        <p class="rule-item"><strong>IV.</strong> Puedes volver al collar en cualquier momento haciendo clic en "Volver al Collar".</p>
+        <p class="rule-item"><strong>V.</strong> Al tocar el collar en la pantalla principal, el pacto se reactiva y la Death Note se abre de nuevo ante ti.</p>
+      </div>
+      <button class="death-btn modal-confirm-btn" id="close-rules-btn-2">Entendido</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

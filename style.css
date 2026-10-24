@@ -1,0 +1,773 @@
+/* ====================================================
+   DEATH NOTE - ESTILOS VISUALES Y ANIMACIONES
+   ==================================================== */
+
+:root {
+  --bg-dark: #0a0a0c;
+  --bg-card: #121216;
+  --death-red: #c9182b;
+  --death-red-glow: rgba(201, 24, 43, 0.45);
+  --paper-bg: #f9f7f1;
+  --paper-line: #d6cfc2;
+  --paper-red-margin: #e8a5a5;
+  --ink-color: #1a1918;
+  --ink-muted: #5e5954;
+  --leather-black: #111114;
+  --border-gold: #38342c;
+  --font-gothic: 'Cinzel', serif;
+  --font-medieval: 'MedievalSharp', cursive;
+  --font-handwriting: 'Nanum Pen Script', 'Caveat', cursive;
+  --font-body: 'Montserrat', sans-serif;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background-color: var(--bg-dark);
+  color: #e0e0e0;
+  font-family: var(--font-body);
+  overflow-x: hidden;
+  min-height: 100vh;
+  position: relative;
+  user-select: none;
+}
+
+/* Partículas y atmósfera */
+#ambient-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.mist-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: radial-gradient(circle at center, transparent 30%, rgba(0, 0, 0, 0.85) 90%);
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Botón flotante de sonido */
+.sound-btn {
+  position: fixed;
+  top: 18px;
+  right: 18px;
+  background: rgba(18, 18, 22, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #fff;
+  font-size: 1.1rem;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+  transition: all 0.25s ease;
+}
+
+.sound-btn:hover {
+  border-color: var(--death-red);
+  transform: scale(1.08);
+  box-shadow: 0 0 15px var(--death-red-glow);
+}
+
+/* Manejo de pantallas */
+.screen {
+  display: none;
+  opacity: 0;
+  transition: opacity 0.6s ease, transform 0.6s ease;
+  position: relative;
+  z-index: 10;
+  min-height: 100vh;
+  width: 100%;
+}
+
+.screen.active {
+  display: flex;
+  opacity: 1;
+}
+
+/* ====================================================
+   PANTALLA 1: EL COLLAR Y PORTADA
+   ==================================================== */
+#necklace-screen {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.necklace-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  max-width: 600px;
+  width: 100%;
+  padding: 20px;
+  text-align: center;
+}
+
+.chain-wrapper {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  transform-origin: top center;
+  animation: necklaceSwing 4.5s ease-in-out infinite;
+  filter: drop-shadow(0 15px 25px rgba(0, 0, 0, 0.95)) drop-shadow(0 0 15px rgba(201, 24, 43, 0.25));
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.necklace-container:hover .chain-wrapper {
+  transform: scale(1.06);
+  filter: drop-shadow(0 18px 30px rgba(0, 0, 0, 1)) drop-shadow(0 0 25px var(--death-red-glow));
+}
+
+#necklace-canvas {
+  width: 290px;
+  height: 380px;
+  max-width: 85vw;
+  object-fit: contain;
+}
+
+.call-to-action {
+  margin-top: 30px;
+}
+
+.death-title {
+  font-family: var(--font-gothic);
+  font-size: 3.2rem;
+  letter-spacing: 0.35em;
+  color: #f5f5f5;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.3), 0 0 25px var(--death-red-glow);
+  margin-bottom: 12px;
+}
+
+.pulse-text {
+  font-family: var(--font-body);
+  font-size: 1.05rem;
+  letter-spacing: 0.1em;
+  color: #b5b5b5;
+  animation: pulseGlow 2.2s infinite ease-in-out;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.shinigami-hint {
+  font-family: var(--font-medieval);
+  font-size: 0.95rem;
+  color: #7a7a85;
+  font-style: italic;
+  letter-spacing: 0.05em;
+}
+
+@keyframes necklaceSwing {
+  0% { transform: rotate(0deg); }
+  25% { transform: rotate(2.5deg); }
+  50% { transform: rotate(0deg); }
+  75% { transform: rotate(-2.5deg); }
+  100% { transform: rotate(0deg); }
+}
+
+@keyframes pulseGlow {
+  0%, 100% { opacity: 0.45; transform: scale(0.98); }
+  50% { opacity: 1; transform: scale(1.02); text-shadow: 0 0 12px var(--death-red-glow); color: #fff; }
+}
+
+/* Transición cinemática al abrir */
+.screen.opening {
+  animation: bookOpenZoom 0.9s cubic-bezier(0.7, 0, 0.3, 1) forwards;
+}
+
+@keyframes bookOpenZoom {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  60% {
+    transform: scale(2.2);
+    opacity: 0.6;
+    filter: blur(4px) brightness(1.6);
+  }
+  100% {
+    transform: scale(3);
+    opacity: 0;
+    filter: blur(10px);
+  }
+}
+
+/* ====================================================
+   PANTALLA 2: LA DEATH NOTE (LIBRETA / DIARIO)
+   ==================================================== */
+#book-screen {
+  flex-direction: column;
+  align-items: center;
+  padding: 15px;
+}
+
+.book-controls-top {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+  max-width: 1100px;
+  margin-bottom: 16px;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+}
+
+.nav-btn {
+  background: rgba(22, 22, 26, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #d1d1d6;
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  font-weight: 500;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.nav-btn:hover {
+  background: rgba(35, 35, 42, 1);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-1px);
+}
+
+.nav-btn.rules-highlight {
+  border-color: rgba(201, 24, 43, 0.4);
+}
+
+.nav-btn.rules-highlight:hover {
+  border-color: var(--death-red);
+  box-shadow: 0 0 10px var(--death-red-glow);
+}
+
+/* El Libro Físico */
+.death-book-container {
+  width: 100%;
+  max-width: 1100px;
+  perspective: 1500px;
+  margin-bottom: 30px;
+}
+
+.death-book {
+  background: var(--leather-black);
+  border-radius: 12px;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.95), 0 0 35px rgba(0, 0, 0, 0.9);
+  border: 3px solid #232328;
+  padding: 12px;
+  position: relative;
+  transition: transform 0.4s ease;
+}
+
+.book-leather-binding {
+  background: #0f0f12;
+  border-radius: 8px;
+  padding: 14px;
+  box-shadow: inset 0 0 25px rgba(0, 0, 0, 0.9);
+  position: relative;
+}
+
+.book-header-spine {
+  text-align: center;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 12px;
+}
+
+.spine-title {
+  font-family: var(--font-gothic);
+  font-size: 1.15rem;
+  letter-spacing: 0.4em;
+  color: #a8a8b2;
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
+}
+
+/* Contenedor de las dos páginas */
+.book-pages-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 16px;
+  background: #252422;
+  border-radius: 6px;
+  padding: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+  position: relative;
+}
+
+/* Sombra central del lomo del libro */
+.book-pages-wrapper::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 45.4%;
+  width: 16px;
+  background: linear-gradient(to right, rgba(0,0,0,0.35), rgba(0,0,0,0.65), rgba(0,0,0,0.35));
+  pointer-events: none;
+  z-index: 5;
+}
+
+/* Hoja de papel individual */
+.book-page {
+  background-color: var(--paper-bg);
+  color: var(--ink-color);
+  border-radius: 4px;
+  min-height: 580px;
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.08), 2px 2px 8px rgba(0,0,0,0.25);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  user-select: text;
+}
+
+/* Efecto de papel viejo / vintage */
+.book-page::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    radial-gradient(circle at 80% 20%, rgba(200, 180, 150, 0.12) 0%, transparent 40%),
+    radial-gradient(circle at 20% 80%, rgba(180, 160, 130, 0.15) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.page-inner {
+  padding: 24px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 2;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid var(--paper-line);
+  padding-bottom: 10px;
+  margin-bottom: 14px;
+}
+
+.gothic-heading {
+  font-family: var(--font-gothic);
+  font-size: 1.35rem;
+  letter-spacing: 0.1em;
+  color: #1a1a1a;
+  font-weight: 800;
+}
+
+.badge {
+  background: #e3ded5;
+  color: #4a453f;
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 12px;
+}
+
+.mini-btn {
+  background: #2b2a28;
+  color: #fff;
+  border: none;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-family: var(--font-body);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.mini-btn:hover {
+  background: var(--death-red);
+}
+
+/* Barra de búsqueda */
+.search-bar-wrap {
+  margin-bottom: 12px;
+}
+
+.search-bar-wrap input {
+  width: 100%;
+  padding: 8px 12px;
+  background: #f0ede6;
+  border: 1px solid #dcd5c9;
+  border-radius: 4px;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: var(--ink-color);
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.search-bar-wrap input:focus {
+  border-color: #8c857b;
+  background: #fff;
+}
+
+/* Lista de notas registradas */
+.entries-list {
+  flex: 1;
+  overflow-y: auto;
+  max-height: 460px;
+  padding-right: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Scrollbar estilizada */
+.entries-list::-webkit-scrollbar {
+  width: 6px;
+}
+.entries-list::-webkit-scrollbar-thumb {
+  background: #cfc7ba;
+  border-radius: 4px;
+}
+
+.entry-card {
+  background: #ffffff;
+  border: 1px solid #e5ded3;
+  border-left: 4px solid #333;
+  border-radius: 4px;
+  padding: 10px 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.entry-card:hover {
+  border-left-color: var(--death-red);
+  transform: translateX(3px);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+}
+
+.entry-card.active {
+  background: #fdf6f6;
+  border-color: #e8b0b6;
+  border-left-color: var(--death-red);
+}
+
+.entry-card-title {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #1a1a1a;
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.entry-card-meta {
+  font-size: 0.75rem;
+  color: #7d756d;
+  display: flex;
+  justify-content: space-between;
+}
+
+.entry-card-preview {
+  font-size: 0.82rem;
+  color: #4a453f;
+  margin-top: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-family: var(--font-handwriting);
+  font-size: 1.1rem;
+}
+
+.empty-state {
+  text-align: center;
+  color: #827b72;
+  margin-top: 60px;
+  padding: 20px;
+  font-style: italic;
+}
+
+.empty-state .sub {
+  font-size: 0.85rem;
+  margin-top: 6px;
+  color: #9e978e;
+}
+
+/* Formulario de Escritura (Página Derecha) */
+.note-form {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 12px;
+}
+
+.form-row {
+  width: 100%;
+}
+
+.title-input {
+  width: 100%;
+  font-family: var(--font-gothic);
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--ink-color);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid var(--paper-line);
+  padding: 8px 4px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.title-input:focus {
+  border-bottom-color: var(--death-red);
+}
+
+.meta-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+  color: var(--ink-muted);
+}
+
+.date-badge {
+  font-family: var(--font-body);
+  font-weight: 600;
+}
+
+.feather-ink-cue {
+  font-style: italic;
+  font-size: 0.75rem;
+  color: #8a837a;
+}
+
+/* Hojas con líneas de libreta */
+.textarea-row {
+  flex: 1;
+  display: flex;
+}
+
+.lined-textarea {
+  width: 100%;
+  flex: 1;
+  min-height: 290px;
+  background-color: transparent;
+  background-image: repeating-linear-gradient(
+    transparent,
+    transparent 31px,
+    var(--paper-line) 31px,
+    var(--paper-line) 32px
+  );
+  line-height: 32px;
+  padding: 2px 8px;
+  font-family: var(--font-handwriting);
+  font-size: 1.55rem;
+  letter-spacing: 0.04em;
+  color: #111;
+  border: none;
+  outline: none;
+  resize: none;
+}
+
+.lined-textarea::placeholder {
+  color: #aba296;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  line-height: 24px;
+  font-style: italic;
+}
+
+/* Botones de acción del formulario */
+.form-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.death-btn {
+  flex: 1;
+  background: #181716;
+  color: #f7f7f7;
+  border: 1px solid #3d3a36;
+  padding: 12px 20px;
+  border-radius: 4px;
+  font-family: var(--font-gothic);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.death-btn:hover {
+  background: var(--death-red);
+  border-color: #ff3b4e;
+  box-shadow: 0 0 15px var(--death-red-glow);
+  transform: translateY(-2px);
+}
+
+.death-btn.delete-btn {
+  background: #4a1215;
+  border-color: #6d1b20;
+  flex: 0.6;
+}
+
+.death-btn.delete-btn:hover {
+  background: #8b131b;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* ====================================================
+   MODAL DE REGLAS (HOW TO USE IT)
+   ==================================================== */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(5px);
+  z-index: 200;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.modal.active {
+  display: flex;
+}
+
+.modal-content {
+  background: #0f0f13;
+  border: 2px solid #2f2e36;
+  border-radius: 8px;
+  max-width: 580px;
+  width: 100%;
+  padding: 30px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.9), 0 0 25px rgba(201, 24, 43, 0.2);
+  position: relative;
+  color: #ddd;
+}
+
+.close-modal-btn {
+  position: absolute;
+  top: 14px;
+  right: 18px;
+  background: transparent;
+  border: none;
+  color: #888;
+  font-size: 1.8rem;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.close-modal-btn:hover {
+  color: #fff;
+}
+
+.modal-title {
+  font-family: var(--font-gothic);
+  font-size: 1.8rem;
+  text-align: center;
+  letter-spacing: 0.25em;
+  color: #f0f0f0;
+}
+
+.rules-divider {
+  width: 80px;
+  height: 2px;
+  background: var(--death-red);
+  margin: 14px auto 22px auto;
+  box-shadow: 0 0 8px var(--death-red);
+}
+
+.rules-body {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin-bottom: 24px;
+  color: #b8b8c2;
+}
+
+.rule-item strong {
+  color: #f5f5f5;
+  font-family: var(--font-gothic);
+}
+
+.modal-confirm-btn {
+  width: 100%;
+}
+
+/* ====================================================
+   RESPONSIVIDAD (MÓVILES Y PANTALLAS PEQUEÑAS)
+   ==================================================== */
+@media (max-width: 860px) {
+  .book-pages-wrapper {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .book-pages-wrapper::after {
+    display: none;
+  }
+
+  .death-title {
+    font-size: 2.3rem;
+    letter-spacing: 0.2em;
+  }
+
+  #necklace-canvas {
+    width: 230px;
+    height: 310px;
+  }
+
+  .book-page {
+    min-height: auto;
+  }
+
+  .lined-textarea {
+    min-height: 220px;
+  }
+
+  .book-controls-top {
+    justify-content: center;
+  }
+}
